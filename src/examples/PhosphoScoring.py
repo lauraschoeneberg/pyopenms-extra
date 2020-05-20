@@ -55,12 +55,12 @@ def convertToMSSpectrum(input_):
 """
 Two phospho scorers, the interface is available through the "score" function:
 
-- Input: 
+- Input:
   - PeptideHit (pyopenms.PeptideHit)
   - Spectrum (pyopenms.MSSpectrum)
   - [Scorer massDelta]
 
-- Output: 
+- Output:
     [ Score, NewSequence ]
 """
 

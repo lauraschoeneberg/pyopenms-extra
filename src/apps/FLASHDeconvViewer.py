@@ -478,7 +478,8 @@ class ControllerWidget(QWidget):
                 txt_list = []
 
                 for theo in theo_list:  # theo : [0] cs [1] iso mz list
-                    # plotting only theoretical mz valule within experimental mz range
+                    # plotting only theoretical mz valule within experimental
+                    # mz range
                     if (theo[1][0] <= xlimit[0]) | (theo[1][-1] >= xlimit[1]):
                         continue
 

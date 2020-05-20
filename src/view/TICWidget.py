@@ -185,8 +185,7 @@ class TICWidget(PlotWidget):
         for exist_label in list(self._peak_labels):
             if exist_label != new_label:
                 new_label_rect = self._peak_labels[new_label]["label"].mapRectToDevice(
-                    self._peak_labels[new_label]["label"].boundingRect()
-                )
+                    self._peak_labels[new_label]["label"].boundingRect())
                 exist_label_rect = self._peak_labels[exist_label][
                     "label"
                 ].mapRectToDevice(
@@ -223,8 +222,10 @@ class TICWidget(PlotWidget):
             for index in self._peak_indices:
                 if self._ints[index] in self._currentIntensitiesInRange:
                     self._add_label(
-                        index, self._rts[index], self._rts[index], self._ints[index]
-                    )
+                        index,
+                        self._rts[index],
+                        self._rts[index],
+                        self._ints[index])
 
     def _redrawLabels(self):
         self._clear_labels()
@@ -281,7 +282,11 @@ class TICWidget(PlotWidget):
             larger_idx -= 1
         if larger_idx > 0:
             smaller_idx = larger_idx - 1
-        if abs(self._rts[larger_idx] - point_x) < abs(self._rts[smaller_idx] - point_x):
+        if abs(
+            self._rts[larger_idx] -
+            point_x) < abs(
+            self._rts[smaller_idx] -
+                point_x):
             closest_datapoint_idx = larger_idx
 
         else:

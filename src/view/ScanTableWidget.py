@@ -126,7 +126,7 @@ class ScanTableWidget(QWidget):
         # default : first row selected. in OpenMSWidgets
 
     def onRowSelected(self, index):
-        if index.siblingAtColumn(1).data() == None:
+        if index.siblingAtColumn(1).data() is None:
             return  # prevents crash if row gets filtered out
         self.curr_spec = self.ms_experiment.getSpectrum(
             index.siblingAtColumn(1).data())
@@ -163,7 +163,8 @@ class ScanTableWidget(QWidget):
         self.menuValues.addAction(actionAll)
         self.menuValues.addSeparator()
 
-        for actionNumber, actionName in enumerate(sorted(list(set(valuesUnique)))):
+        for actionNumber, actionName in enumerate(
+                sorted(list(set(valuesUnique)))):
             action = QAction(actionName, self)
             self.signalMapper.setMapping(action, actionNumber)
             action.triggered.connect(self.signalMapper.map)

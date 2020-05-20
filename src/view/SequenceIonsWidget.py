@@ -229,8 +229,8 @@ class observed_peptide(QWidget):
 
                 # position of char with center indent
                 position = QPointF(
-                    start_point + blank, SequenceIonsWidget.SUFFIX_HEIGHT + height
-                )
+                    start_point + blank,
+                    SequenceIonsWidget.SUFFIX_HEIGHT + height)
                 qp.drawText(position, s)
 
                 # position lines for possible ions
@@ -287,7 +287,13 @@ class observed_peptide(QWidget):
             qp.drawText(pos_ion, ion)
             blank_ion += height_ion
 
-    def _drawSuffixIon(self, qp, index_reverse, metrics_ion, pos_end, pos_right):
+    def _drawSuffixIon(
+            self,
+            qp,
+            index_reverse,
+            metrics_ion,
+            pos_end,
+            pos_right):
         qp.setPen(self._getPen(self.colors["red"]))
         suffix_ions = sorted(self.suffix[index_reverse], reverse=True)
         blank_ion = 5

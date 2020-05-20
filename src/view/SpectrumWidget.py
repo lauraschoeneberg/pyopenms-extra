@@ -50,7 +50,7 @@ class SpectrumWidget(PlotWidget):
         self.plot(clear=True)
         self.zoomToFullRange = zoomToFullRange  # relevant in redrawPlot()
         # delete old highlighte "hover" peak
-        if self.highlighted_peak_label != None:
+        if self.highlighted_peak_label is not None:
             self.removeItem(self.highlighted_peak_label)
             self.highlighted_peak_label = None
         self.spec = spectrum
@@ -166,7 +166,8 @@ class SpectrumWidget(PlotWidget):
                             self.currMaxY, self.currMaxY], pen=pen
                     )
                 )
-                for x, txt_label in zip(lastruct.mz_list, lastruct.text_label_list):
+                for x, txt_label in zip(
+                        lastruct.mz_list, lastruct.text_label_list):
                     self._ladder_anno_lines[ladder_key].append(
                         self.plot([x, x], [0, self.currMaxY], pen=pen)
                     )
@@ -206,7 +207,7 @@ class SpectrumWidget(PlotWidget):
                 self._mzs, mouse_point.x() + 4.0 * pixel_width, side="right"
             )
             if left == right:  # none found -> remove text
-                if self.highlighted_peak_label != None:
+                if self.highlighted_peak_label is not None:
                     self.highlighted_peak_label.setText("")
                 return
             # get point in range with minimum squared distance
@@ -216,16 +217,17 @@ class SpectrumWidget(PlotWidget):
             idx_max_int_in_range = np.argmin(np.add(dx, dy))
             x = self._mzs[left + idx_max_int_in_range]
             y = self._ints[left + idx_max_int_in_range]
-            if self.highlighted_peak_label == None:
+            if self.highlighted_peak_label is None:
                 self.highlighted_peak_label = pg.TextItem(
-                    text="{0:.3f}".format(x), color=(100, 100, 100), anchor=(0.5, 1.5)
-                )
-                self.addItem(
-                    self.highlighted_peak_label, ignoreBounds=True
-                )  # ignore bounds to prevent rescaling of axis if the text item touches the border
+                    text="{0:.3f}".format(x), color=(
+                        100, 100, 100), anchor=(
+                        0.5, 1.5))
+                # ignore bounds to prevent rescaling of axis if the text item
+                # touches the border
+                self.addItem(self.highlighted_peak_label, ignoreBounds=True)
             self.highlighted_peak_label.setText("{0:.3f}".format(x))
             self.highlighted_peak_label.setPos(x, y)
         else:
             # mouse moved out of visible area: remove highlighting item
-            if self.highlighted_peak_label != None:
+            if self.highlighted_peak_label is not None:
                 self.highlighted_peak_label.setText("")

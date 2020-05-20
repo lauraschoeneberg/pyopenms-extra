@@ -18,9 +18,8 @@ if __name__ == "__main__":
     y = np.array([-2, 3, -8, -4, 3, 12, -15, 10, 5, -12])
     green = (0, 255, 0)
     purple = (128, 0, 255)
-    c = np.array(
-        [green, purple, green, purple, green, purple, green, purple, green, green]
-    )
+    c = np.array([green, purple, green, purple, green,
+                  purple, green, purple, green, green])
     example_widget.setMassErrors(x, y, c)
     ex.setExampleWidget(example_widget)
     ex.show()

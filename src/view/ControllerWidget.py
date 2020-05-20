@@ -133,11 +133,11 @@ class ControllerWidget(QWidget):
             if tableRT in self.scanIDDict:
                 index_seq = self.scan_widget.table_model.index(row, 6)
                 self.scan_widget.table_model.setData(
-                    index_seq, self.scanIDDict[tableRT]["PepSeq"], Qt.DisplayRole
-                )
+                    index_seq, self.scanIDDict[tableRT]["PepSeq"], Qt.DisplayRole)
 
                 index_ions = self.scan_widget.table_model.index(row, 7)
-                # data needs to be a string, but reversible -> using json.dumps()
+                # data needs to be a string, but reversible -> using
+                # json.dumps()
                 self.scan_widget.table_model.setData(
                     index_ions,
                     json.dumps(self.scanIDDict[tableRT]["PepIons"]),
@@ -168,8 +168,7 @@ class ControllerWidget(QWidget):
                 index = self.scan_widget.table_model.index(row, 2)
                 try:
                     self.curr_table_index = self.scan_widget.proxy.mapFromSource(
-                        index
-                    )  # use proxy to get from filtered model index
+                        index)  # use proxy to get from filtered model index
                     return self.curr_table_index.row()
                 except ValueError:
                     print("could not found ModelIndex of row")
@@ -193,9 +192,9 @@ class ControllerWidget(QWidget):
     def filterColorsMZIons(
         self, ions_data_dict
     ):  # create color/mz array by distinguishing between prefix & suffix ions
-        self.peakAnnoData = (
-            {}
-        )  # key is ion annotation (e.g. b2): [mz, color distinguishing prefix, suffix]
+        # key is ion annotation (e.g. b2): [mz, color distinguishing prefix,
+        # suffix]
+        self.peakAnnoData = ({})
         colors = []
         mzs = []
         col_red = (255, 0, 0)  # suffix
@@ -233,9 +232,9 @@ class ControllerWidget(QWidget):
                     6).data(), index.siblingAtColumn(7).data()
             )
             self.errorData(index.siblingAtColumn(7).data())
-            if (
-                self.peakAnnoData is not None
-            ):  # peakAnnoData created with existing ions in errorData (bc of coloring)
+            # peakAnnoData created with existing ions in errorData (bc of
+            # coloring)
+            if (self.peakAnnoData is not None):
                 self.spectrum_widget.setPeakAnnotations(
                     self.createPeakAnnotation())
                 self.spectrum_widget.redrawPlot()
@@ -253,7 +252,8 @@ class ControllerWidget(QWidget):
 
     def createPeakAnnotation(self):
         pStructList = []
-        # for the future -> check clashes like in the TIC widget and then add labels (should be done in SpectrumWidget)
+        # for the future -> check clashes like in the TIC widget and then add
+        # labels (should be done in SpectrumWidget)
         for anno, data in self.peakAnnoData.items():
             mz, anno_color = data[0], data[1]
             index = self.find_nearest_Index(self.spectrum_widget._mzs, mz)
@@ -329,7 +329,8 @@ class ControllerWidget(QWidget):
         return suffix, prefix
 
     def filterAnnotationIon(self, fragment_anno):
-        # filter from raw ion data annotation index and filtered annotation name (e.g. y2)
+        # filter from raw ion data annotation index and filtered annotation
+        # name (e.g. y2)
         index = [s for s in re.findall(r"-?\d+\.?\d*", fragment_anno)][0]
         ion_anno = fragment_anno.split(index)[0] + index
         self.filteredIonFragments.append((fragment_anno, ion_anno))

@@ -83,8 +83,7 @@ class ScanTableWidget(QWidget):
         QWidget.__init__(self, *args)
         self.ms_experiment = ms_experiment
 
-        self.table_model = ScanTableModel(
-            self, self.ms_experiment, self.header)
+        self.table_model = ScanTableModel(self, self.ms_experiment, self.header)
         self.table_view = QTableView()
 
         # register a proxy class for filering and sorting the scan table
@@ -126,10 +125,9 @@ class ScanTableWidget(QWidget):
         # default : first row selected. in OpenMSWidgets
 
     def onRowSelected(self, index):
-        if index.siblingAtColumn(1).data() is None:
+        if index.siblingAtColumn(1).data() == None:
             return  # prevents crash if row gets filtered out
-        self.curr_spec = self.ms_experiment.getSpectrum(
-            index.siblingAtColumn(1).data())
+        self.curr_spec = self.ms_experiment.getSpectrum(index.siblingAtColumn(1).data())
         self.scanClicked.emit(index)
 
     def onCurrentChanged(self, new_index, old_index):
@@ -163,8 +161,7 @@ class ScanTableWidget(QWidget):
         self.menuValues.addAction(actionAll)
         self.menuValues.addSeparator()
 
-        for actionNumber, actionName in enumerate(
-                sorted(list(set(valuesUnique)))):
+        for actionNumber, actionName in enumerate(sorted(list(set(valuesUnique)))):
             action = QAction(actionName, self)
             self.signalMapper.setMapping(action, actionNumber)
             action.triggered.connect(self.signalMapper.map)
@@ -188,8 +185,7 @@ class ScanTableWidget(QWidget):
     def onSignalMapper(self, i):
         stringAction = self.signalMapper.mapping(i).text()
         filterColumn = self.logicalIndex
-        filterString = QRegExp(
-            stringAction, Qt.CaseSensitive, QRegExp.FixedString)
+        filterString = QRegExp(stringAction, Qt.CaseSensitive, QRegExp.FixedString)
 
         self.proxy.setFilterRegExp(filterString)
         self.proxy.setFilterKeyColumn(filterColumn)
@@ -205,8 +201,7 @@ class ScanTableModel(QAbstractTableModel):
         self.header = header
 
         # create array with MSSpectrum
-        self.scanRows = self.getScanListAsArray(
-            ms_experiment)  # data type: list
+        self.scanRows = self.getScanListAsArray(ms_experiment)  # data type: list
 
     def getScanListAsArray(self, ms_experiment):
         scanArr = []

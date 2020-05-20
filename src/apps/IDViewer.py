@@ -1,6 +1,8 @@
-from ControllerWidget import ControllerWidget
-import sys
 import os
+import sys
+from collections import namedtuple
+
+import pyqtgraph as pg
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -11,14 +13,8 @@ from PyQt5.QtWidgets import (
     QFileDialog,
 )
 
-
-import pyqtgraph as pg
-from pyqtgraph import PlotWidget
-
-from collections import namedtuple
-
 sys.path.insert(0, "../view")
-
+from ControllerWidget import ControllerWidget
 
 # structure for annotation (here for reference)
 PeakAnnoStruct = namedtuple(

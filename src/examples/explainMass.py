@@ -1,6 +1,6 @@
-import pyopenms
-from pyopenms import *
 import sys
+
+from pyopenms import *
 
 # Example for mass decomposition (mass explanation)
 # Internal residue masses (as observed e.g. as mass shifts in tandem mass spectra)
@@ -19,8 +19,7 @@ for r in residues:
 
 print("Mass explanations by fast algorithm:")
 # fast algorithm based on integer mass decomposition
-# returns a unique set of compositions (e.g.: only one of 'TSG' and 'GST'
-# is reported)
+# returns a unique set of compositions (e.g.: only one of 'TSG' and 'GST' is reported)
 md_alg = MassDecompositionAlgorithm()
 param = md_alg.getParameters()
 param.setValue("tolerance", 0.05)

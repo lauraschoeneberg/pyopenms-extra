@@ -1,10 +1,7 @@
 ###########################################################################
-# Biological example of phosphopeptide-scoring
+## Biological example of phosphopeptide-scoring
 ###########################################################################
-from PhosphoScoring import convertToRichMSSpectrum, convertToMSSpectrum
-from PhosphoScoring import PhosphoScorerSimple, PhosphoScorerAScore
-import pyopenms
-import csv
+import pyopenms, csv
 
 pepxml_file = "data/sample_xtandem_output.pep.xml"
 mzml_file = "data/sample_spectra.mzML"
@@ -46,35 +43,37 @@ def mapPeptideIdsToSpectra(peptide_ids, exp, matching_mass_tol=1.0):
         corresponding_spectras = rt_bins[int(rt)]
         for corresponding_spectrum in corresponding_spectras:
             if (
-                abs(corresponding_spectrum.getPrecursors()[0].getMZ() - mz)
-                < matching_mass_tol
+                    abs(corresponding_spectrum.getPrecursors()[0].getMZ() - mz)
+                    < matching_mass_tol
             ):
                 hit_mapping[i] = corresponding_spectrum
-        if i not in hit_mapping:
-            print "Could not map hit at RT %s and MZ %s" % (rt, mz)
+        if not hit_mapping.has_key(i):
+            print
+            "Could not map hit at RT %s and MZ %s" % (rt, mz)
     return hit_mapping
 
 
 #
 # Filter the search results and create the mapping of search results to spectra
 #
-filtered_ids = [p for p in peptide_ids if p.getHits()[0].getScore()
-                > cutoff_score]
-# For teaching purposes, only ids betwen 1200 and 1600 s in RT are kept
-# (also the spectra are filtered)
+filtered_ids = [p for p in peptide_ids if p.getHits()[0].getScore() > cutoff_score]
+# For teaching purposes, only ids betwen 1200 and 1600 s in RT are kept (also the spectra are filtered)
 filtered_ids = [
     p
     for p in filtered_ids
     if p.getMetaValue("RT") > 1200 and p.getMetaValue("RT") < 1600
 ]
-print "==========================================================================="
-print "Filtered: kept %s ids below the cutoff score of %s out of %s" % (
+print
+"==========================================================================="
+print
+"Filtered: kept %s ids below the cutoff score of %s out of %s" % (
     len(filtered_ids),
     cutoff_score,
     len(peptide_ids),
 )
 hit_mapping = mapPeptideIdsToSpectra(filtered_ids, exp)
 
+from PhosphoScoring import PhosphoScorerSimple, PhosphoScorerAScore
 
 #
 # Iterate through all peptide hits, extract the corresponding spectra and hand
@@ -82,7 +81,8 @@ hit_mapping = mapPeptideIdsToSpectra(filtered_ids, exp)
 #
 
 # Writer CSV header
-print "Will print the original, search-engine sequence, the AScore sequence and the PhosphoScorerSimple sequence"
+print
+"Will print the original, search-engine sequence, the AScore sequence and the PhosphoScorerSimple sequence"
 writer.writerow(
     [
         "Search-Engine Score",
@@ -107,7 +107,8 @@ for i in range(len(filtered_ids)):
 
     ascore_result = PhosphoScorerAScore().score(phit, spectrum)
     simple_result = PhosphoScorerSimple().score(phit, spectrum)
-    print "====", phit.getSequence().toString(), ascore_result[
+    print
+    "====", phit.getSequence().toString(), ascore_result[
         1
     ].toString(), simple_result[1].toString()
 

@@ -29,12 +29,12 @@ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ###########################################################################
-# Create peak-picking figure
+## Create peak-picking figure
 ###########################################################################
 
-import scipy
-import pyopenms
 import pylab
+import pyopenms
+import scipy
 
 filename = "data/NoiseFilterSGolay_1_input.mzML"
 
@@ -68,7 +68,6 @@ def fft_pick(spec, fft_low_cutoff, fft_high_cutoff):
 
 
 def plot_spec_and_picked_spec(spectrum, picked_spectrum):
-
     original_peaks = spectrum.get_peaks()
     mz_values, intensities = original_peaks.T
 

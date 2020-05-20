@@ -1,6 +1,22 @@
-from SpecViewer import ScanBrowserWidget, App
-import sys
 import os
+import sys
+from collections import namedtuple
+
+import numpy as np
+import pandas as pd
+import pyqtgraph as pg
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import (
+    QStandardItemModel,
+    QStandardItem,
+    QPainter,
+    QIcon,
+    QBrush,
+    QColor,
+    QPen,
+    QPixmap,
+    QIntValidator,
+)
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -22,28 +38,11 @@ from PyQt5.QtWidgets import (
     QFormLayout,
     QDialogButtonBox,
 )
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import (
-    QStandardItemModel,
-    QStandardItem,
-    QPainter,
-    QIcon,
-    QBrush,
-    QColor,
-    QPen,
-    QPixmap,
-    QIntValidator,
-)
-
-import pyqtgraph as pg
+from matplotlib import cm
 from pyqtgraph import PlotWidget
 
-import numpy as np
-import pandas as pd
-from collections import namedtuple
-from matplotlib import cm
-
 sys.path.insert(0, "../view")
+from SpecViewer import ScanBrowserWidget, App
 
 # import pyopenms.Constants
 # define Constant locally until bug in pyOpenMS is fixed
@@ -173,8 +172,7 @@ class MassList:
     def setRTMassDict(self):
         self.RTMassDict = dict()
         if self.isFDresult:
-            self.RTMassDict = self.data.set_index(
-                "MonoisotopicMass").to_dict("index")
+            self.RTMassDict = self.data.set_index("MonoisotopicMass").to_dict("index")
 
 
 class FeatureMapPlotWidget(PlotWidget):
@@ -206,8 +204,7 @@ class FeatureMapPlotWidget(PlotWidget):
                 brush=pg.mkBrush(cmap.mapToQColor(mds.maxIntensity)),
             )
             self.addItem(spi)
-            spots = [{"pos": [i, mass]}
-                     for i in np.arange(mds.startRT, mds.endRT, 1)]
+            spots = [{"pos": [i, mass]} for i in np.arange(mds.startRT, mds.endRT, 1)]
             # print([i for i in np.arange(mds.startRT, mds.endRT, 1)])
             spi.addPoints(spots)
 
@@ -216,8 +213,8 @@ class FeatureMapPlotWidget(PlotWidget):
         colormap = cm.get_cmap("plasma")
         colormap._init()
         lut = (colormap._lut * 255).view(np.ndarray)[
-            : colormap.N
-        ]  # Convert matplotlib colormap from 0-1 to 0 -255 for Qt
+              : colormap.N
+              ]  # Convert matplotlib colormap from 0-1 to 0 -255 for Qt
         self.pg_cmap = pg.ColorMap(pos=miList, color=lut)
         return self.pg_cmap
 
@@ -394,7 +391,7 @@ class ControllerWidget(QWidget):
         new_dict = dict()
         for mass, mds in self.total_masses.items():
             if (mds.startRT == 0 and mds.endRT == sys.maxsize) or (
-                scan_rt >= mds.startRT and scan_rt <= mds.endRT
+                    scan_rt >= mds.startRT and scan_rt <= mds.endRT
             ):
                 new_dict[mass] = mds
         return new_dict
@@ -449,8 +446,7 @@ class ControllerWidget(QWidget):
             theo_list = mass_strc.mz_theo_arr
 
             for theo in theo_list:  # theo : [0] cs [1] iso mz list
-                exp_p = self.findNearestPeakWithTheoPos(
-                    theo[1][0])  # Monoisotopic only
+                exp_p = self.findNearestPeakWithTheoPos(theo[1][0])  # Monoisotopic only
                 if exp_p is None:
                     continue
                 pStructList.append(
@@ -478,8 +474,7 @@ class ControllerWidget(QWidget):
                 txt_list = []
 
                 for theo in theo_list:  # theo : [0] cs [1] iso mz list
-                    # plotting only theoretical mz valule within experimental
-                    # mz range
+                    # plotting only theoretical mz valule within experimental mz range
                     if (theo[1][0] <= xlimit[0]) | (theo[1][-1] >= xlimit[1]):
                         continue
 
@@ -525,14 +520,12 @@ class ControllerWidget(QWidget):
         if mass in self._data_visible:
             if not checked:
                 self._data_visible.remove(str(mass))
-                self.spectrum_widget.setLadderAnnotations(
-                    self.getLadderAnnoStruct())
+                self.spectrum_widget.setLadderAnnotations(self.getLadderAnnoStruct())
                 self.spectrum_widget.redrawLadderAnnotations()
         else:
             if checked:
                 self._data_visible.append(str(mass))
-                self.spectrum_widget.setLadderAnnotations(
-                    self.getLadderAnnoStruct())
+                self.spectrum_widget.setLadderAnnotations(self.getLadderAnnoStruct())
                 self.spectrum_widget.redrawLadderAnnotations()
 
     def addMassToListView(self):
@@ -542,8 +535,7 @@ class ControllerWidget(QWidget):
             new_mass = float(new_mass)
         except Exception:
             return
-        new_mass_str = self.mlc.addNewMass(
-            new_mass, len(self.masses), self.cs_range)
+        new_mass_str = self.mlc.addNewMass(new_mass, len(self.masses), self.cs_range)
         self.masses[new_mass] = new_mass_str
 
         # redraw
@@ -600,8 +592,7 @@ class FDInputDialog(QDialog):
         self.massFileButton.clicked.connect(self.openMassFileDialog)
 
         # from group box - ok/cancel
-        buttonBox = QDialogButtonBox(
-            QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttonBox.accepted.connect(self.handleException)
         buttonBox.rejected.connect(self.reject)
 
@@ -658,7 +649,7 @@ class FDInputDialog(QDialog):
             return
 
         if self.massFileLineEdit.text() and not os.path.exists(
-            self.massFileLineEdit.text()
+                self.massFileLineEdit.text()
         ):
             self.errorDlg.setText("Input mass file doesn't exist.")
             self.errorDlg.exec_()

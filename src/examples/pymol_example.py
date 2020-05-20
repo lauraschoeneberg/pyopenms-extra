@@ -38,13 +38,11 @@ pepxml_file = "data/4D8B.pepXML"
 
 
 def get_peptides_protein_seq():
-
     # Read in PepXML
     protein_ids = []
     peptide_ids = []
     pyopenms.PepXMLFile().load(pepxml_file, protein_ids, peptide_ids)
-    peptides = [pid.getHits()[0].getSequence().toString()
-                for pid in peptide_ids]
+    peptides = [pid.getHits()[0].getSequence().toString() for pid in peptide_ids]
 
     # Sequence could be from FASTA file (or just provided here)
     sequence = "".join(

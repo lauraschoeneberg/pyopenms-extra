@@ -55,12 +55,12 @@ def convertToMSSpectrum(input_):
 """
 Two phospho scorers, the interface is available through the "score" function:
 
-- Input:
+- Input: 
   - PeptideHit (pyopenms.PeptideHit)
   - Spectrum (pyopenms.MSSpectrum)
   - [Scorer massDelta]
 
-- Output:
+- Output: 
     [ Score, NewSequence ]
 """
 
@@ -95,8 +95,7 @@ class PhosphoScorerSimple:
         charge = 1
         # Iterate over all possible phosphosites
         for m in re.finditer("[STY]", seq):
-            new_sequence = seq[: m.start() + 1] + \
-                "(Phospho)" + seq[m.start() - 1:]
+            new_sequence = seq[: m.start() + 1] + "(Phospho)" + seq[m.start() - 1:]
             new_aaseq = pyopenms.AASequence(new_sequence)
             # Generate theoretical spectrum
             spectrum_generator = pyopenms.TheoreticalSpectrumGenerator()
@@ -128,7 +127,7 @@ class PhosphoScorerSimple:
 
     def compare_binnedSpectra(self, sp1, sp2):
         """Compare two binned spectra, return a similarity score
-
+        
         The two binned spectra should be created by a call to binSpectrum."""
 
         start = max(min(sp1.keys()), min(sp2.keys()))
@@ -163,4 +162,5 @@ class PhosphoScorerSimple:
 
 
 if __name__ == "__main__":
-    print "This file is intended as library and not as Python executable, please do not execute it directly."
+    print
+    "This file is intended as library and not as Python executable, please do not execute it directly."

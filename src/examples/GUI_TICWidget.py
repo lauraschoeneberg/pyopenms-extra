@@ -1,17 +1,15 @@
-from TICWidget import TICWidget
 import sys
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QObject
 
 import pyopenms
-
 from GUI_EXAMPLE_BASE import GUI_EXAMPLE_BASE
+from PyQt5.QtCore import QObject
+from PyQt5.QtWidgets import QApplication
 
 sys.path.insert(0, "../view")
+from TICWidget import TICWidget
+
 
 # mock object to test the mouse click signal by TICWidget
-
-
 class TestMouseClick(QObject):
     old_variable = (0, 0)
 
@@ -23,7 +21,6 @@ class TestMouseClick(QObject):
 
     def printRTBounds(self, start_rt, stop_rt):
         if TestMouseClick.old_variable != (start_rt, stop_rt):
-
             print("RT Bounds: ", start_rt, stop_rt)
 
         TestMouseClick.old_variable = (start_rt, stop_rt)
@@ -40,8 +37,7 @@ if __name__ == "__main__":
     example_widget.setTIC(exp.getTIC())
     mouse_click_test = TestMouseClick()
     example_widget.sigRTClicked.connect(mouse_click_test.printRT)
-    example_widget.sigSeleRTRegionChangeFinished.connect(
-        mouse_click_test.printRTBounds)
+    example_widget.sigSeleRTRegionChangeFinished.connect(mouse_click_test.printRTBounds)
     ex.setExampleWidget(example_widget)
     ex.show()
     sys.exit(app.exec_())

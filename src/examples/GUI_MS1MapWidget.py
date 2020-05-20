@@ -1,12 +1,11 @@
-from MS1MapWidget import MS1MapWidget
 import sys
-from PyQt5.QtWidgets import QApplication
 
 import pyopenms
-
 from GUI_EXAMPLE_BASE import GUI_EXAMPLE_BASE
+from PyQt5.QtWidgets import QApplication
 
 sys.path.insert(0, "../view")
+from MS1MapWidget import MS1MapWidget
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

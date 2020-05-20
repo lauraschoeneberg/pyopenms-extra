@@ -44,8 +44,7 @@ class SequenceIonsWidget(QWidget):
         self.resize()
 
         self._pep.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self._pep.setMinimumSize(
-            SequenceIonsWidget.WIDTH, SequenceIonsWidget.HEIGHT)
+        self._pep.setMinimumSize(SequenceIonsWidget.WIDTH, SequenceIonsWidget.HEIGHT)
         self.seqIons_layout.addItem(
             QSpacerItem(
                 40,
@@ -94,14 +93,12 @@ class SequenceIonsWidget(QWidget):
         if suffix == {}:
             max_ion_suff = 1
         else:
-            max_ion_suff = len(
-                suffix[max(suffix, key=lambda key: len(suffix[key]))])
+            max_ion_suff = len(suffix[max(suffix, key=lambda key: len(suffix[key]))])
 
         if prefix == {}:
             max_ion_pre = 1
         else:
-            max_ion_pre = len(
-                prefix[max(prefix, key=lambda key: len(prefix[key]))])
+            max_ion_pre = len(prefix[max(prefix, key=lambda key: len(prefix[key]))])
 
         metrics_pep = QFontMetricsF(self._pep.getFont_Pep())
         height_pep = metrics_pep.height()
@@ -130,8 +127,7 @@ class SequenceIonsWidget(QWidget):
 
     def updateWindow(self):
         self.resize()
-        self._pep.setMinimumSize(
-            SequenceIonsWidget.WIDTH, SequenceIonsWidget.HEIGHT)
+        self._pep.setMinimumSize(SequenceIonsWidget.WIDTH, SequenceIonsWidget.HEIGHT)
         self.setFixedHeight(SequenceIonsWidget.HEIGHT)
         self.update()
 
@@ -229,8 +225,8 @@ class observed_peptide(QWidget):
 
                 # position of char with center indent
                 position = QPointF(
-                    start_point + blank,
-                    SequenceIonsWidget.SUFFIX_HEIGHT + height)
+                    start_point + blank, SequenceIonsWidget.SUFFIX_HEIGHT + height
+                )
                 qp.drawText(position, s)
 
                 # position lines for possible ions
@@ -239,8 +235,7 @@ class observed_peptide(QWidget):
                 ) - 1
 
                 start_linePos = QPointF(
-                    start_point + blank -
-                    (SPACE / 2), centerOfLine - height / 2 - 2.5
+                    start_point + blank - (SPACE / 2), centerOfLine - height / 2 - 2.5
                 )
                 end_linePos = QPointF(
                     start_linePos.x(), centerOfLine + height / 2 + 2.5
@@ -287,13 +282,7 @@ class observed_peptide(QWidget):
             qp.drawText(pos_ion, ion)
             blank_ion += height_ion
 
-    def _drawSuffixIon(
-            self,
-            qp,
-            index_reverse,
-            metrics_ion,
-            pos_end,
-            pos_right):
+    def _drawSuffixIon(self, qp, index_reverse, metrics_ion, pos_end, pos_right):
         qp.setPen(self._getPen(self.colors["red"]))
         suffix_ions = sorted(self.suffix[index_reverse], reverse=True)
         blank_ion = 5

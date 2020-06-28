@@ -4,6 +4,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 
 from mzTabTableWidget import mzTabTableWidget
+from GUI_FastaViewer import Window
+from SpectrumWidget import SpectrumWidget
 from ErrorWidget import ErrorWidget
 
 
@@ -34,8 +36,8 @@ class MyTableWidget(QWidget):
         self.tab1 = QWidget()
         self.tab2 = QWidget()
         self.tab3 = mzTabTableWidget()
-        self.tab4 = QWidget()
-        self.tab5 = QWidget()
+        self.tab4 = Window()
+        self.tab5 = SpectrumWidget()
 
         self.tabs.resize(300,200)
 
@@ -46,30 +48,12 @@ class MyTableWidget(QWidget):
         self.tabs.addTab(self.tab4, "Fasta-Viewer")
         self.tabs.addTab(self.tab5, "Spectrum Viewer")
 
-        #set first tab with example widget (button)
-        self.tab1.layout = QVBoxLayout(self)
-        self.pushButton1 = QPushButton("TEST BUTTON")
-        self.tab1.layout.addWidget(self.pushButton1)
-        self.tab1.setLayout(self.tab1.layout)
-        
-        """
-        self.w3 = SetTab3()
-        self.tab3.layout.addWidget(self.w3)
-        self.tab3.setLayout(self.tab3.layout)
-        """
         #add tabs to widget
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
-"""
-class SetTab3(QWidget, mzTabTableWidget.Ui_Form):
-    def __init__(self, parent=None):
-        super(SetTab3, self).__init__(parent)
-        self.setupUi(self)
-"""
 
 if __name__== '__main__':
     app = QApplication(sys.argv)
     ex = App()
     sys.exit(app.exec_())
-        

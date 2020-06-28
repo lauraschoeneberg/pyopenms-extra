@@ -3,7 +3,9 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QAc
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 
-#import mzTabTableWidget
+from mzTabTableWidget import mzTabTableWidget
+from ErrorWidget import ErrorWidget
+
 
 class App(QMainWindow):
 
@@ -31,9 +33,10 @@ class MyTableWidget(QWidget):
         self.tabs = QTabWidget()
         self.tab1 = QWidget()
         self.tab2 = QWidget()
-        self.tab3 = QWidget()
+        self.tab3 = mzTabTableWidget()
         self.tab4 = QWidget()
         self.tab5 = QWidget()
+
         self.tabs.resize(300,200)
 
         #add tabs

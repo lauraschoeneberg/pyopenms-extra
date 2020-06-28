@@ -15,7 +15,7 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QWidget, QTableWidget, QVBoxLayout, QTableWidgetItem
 
 
-class Window(QWidget):
+class mzTabTableWidget(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -141,6 +141,3 @@ class Window(QWidget):
         self.createProtTable()
 
 
-App = QApplication(sys.argv)
-window = Window()
-sys.exit(App.exec())

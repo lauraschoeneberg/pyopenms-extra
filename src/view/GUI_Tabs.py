@@ -7,9 +7,11 @@ from mzTabTableWidget import mzTabTableWidget
 from GUI_FastaViewer import Window
 from SpectrumWidget import SpectrumWidget
 from ErrorWidget import ErrorWidget
+from SpecViewer import App
+#from XMLViewer import XMLViewer
 
 
-class App(QMainWindow):
+class AppGUITabs(QMainWindow):
 
     def __init__(self):
         super().__init__()
@@ -33,11 +35,12 @@ class MyTableWidget(QWidget):
 
         #initialize tab screen
         self.tabs = QTabWidget()
+        #self.tab1 = XMLViewer()
         self.tab1 = QWidget()
         self.tab2 = QWidget()
         self.tab3 = mzTabTableWidget()
         self.tab4 = Window()
-        self.tab5 = SpectrumWidget()
+        self.tab5 = App()
 
         self.tabs.resize(300,200)
 
@@ -55,5 +58,5 @@ class MyTableWidget(QWidget):
 
 if __name__== '__main__':
     app = QApplication(sys.argv)
-    ex = App()
+    ex = AppGUITabs()
     sys.exit(app.exec_())

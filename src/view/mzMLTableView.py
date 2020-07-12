@@ -20,6 +20,9 @@ class mzMLTableView(QWidget):
     Main Widget of the TableEditor app
     """
     def __init__(self, *args):
+
+        self.path = ""
+
         # set variable self.testForTime to True to see all Runtimes
         self.testForTime = False
         if self.testForTime:
@@ -164,6 +167,8 @@ class mzMLTableView(QWidget):
         file, _ = QFileDialog.getOpenFileName(
             self, "QFileDialog.getOpenFileName()", "",
             "All Files (*);;tsv (*.tsv);; csv (*.csv)", options=options)
+
+        self.path = file
 
         if self.testForTime:
             starttime = timeit.default_timer()

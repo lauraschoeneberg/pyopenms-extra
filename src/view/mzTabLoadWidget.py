@@ -2,7 +2,7 @@ import sys
 import webbrowser
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QTableWidget, QVBoxLayout, QTableWidgetItem, QPushButton, QFileDialog
-from mzTabTableWidget import Window as mz
+from mzTabTableWidget import mzTabTableWidget as mz
 
 class Window(QWidget):
     def __init__(self):
@@ -37,12 +37,12 @@ class Window(QWidget):
 
     def loadFile(self):
         self.filename = QFileDialog.getOpenFileName()
+        print(self.filename[0])
         self.mzTabTableWidget.readFile(self.filename[0])
 
 # the following is here to test the widget on its own, leave it commented if you want to use it elsewhere
-"""
+
 if __name__== '__main__':
     app = QApplication(sys.argv)
     ex = Window()
     sys.exit(app.exec_())
-"""

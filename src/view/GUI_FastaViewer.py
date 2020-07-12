@@ -17,6 +17,7 @@ from Logic_LoadFasta_FastaViewer import*  # NOQA: E402
 
 
 class Window(QMainWindow):
+
     """
     A class used to make and change the appearance of the FastaViewer.
     It enables to load a fasta file of a colletion of protein sequences
@@ -86,6 +87,7 @@ class Window(QMainWindow):
         nothing
         """
         super().__init__()
+        self.path = ""
         self.setFixedSize(635, 480)
         self.initUI()
 
@@ -719,8 +721,8 @@ def main():
     app = QApplication(sys.argv)
     ex = Window()
     sys.exit(app.exec_())
-"""
 
+"""
 if __name__ == '__main__':
     main()
 """

@@ -36,9 +36,9 @@ class MyTableWidget(QWidget):
         self.layout = QVBoxLayout(self)
 
         self.loadButton = QPushButton(self) #neu
-        self.loadButton.setText("Config")
-        #self.loadButton.clicked.connect(...)
-        
+        self.loadButton.setText("Run ProteomicsLFQ")
+        self.loadButton.clicked.connect(self.LFQ)
+
         #initialize tab screen
         self.tabs = QTabWidget()
         self.tab1 = XMLViewer()
@@ -60,6 +60,15 @@ class MyTableWidget(QWidget):
         self.layout.addWidget(self.loadButton)
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
+
+    def LFQ(self):
+
+        fastapath = self.tab4.path
+
+        print("path to fasta = " + fastapath)
+
+        if fastapath != "":
+            self.tab3.readFile("/home/taiki/Uni/SS20/PYGUI/test.mzTab")
 
 
 if __name__== '__main__':

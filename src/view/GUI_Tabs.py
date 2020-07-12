@@ -8,7 +8,8 @@ from GUI_FastaViewer import Window
 from SpectrumWidget import SpectrumWidget
 from ErrorWidget import ErrorWidget
 from SpecViewer import App
-#from XMLViewer import XMLViewer
+from XMLViewer import XMLViewer
+from mzMLTableView import mzMLTableView
 
 
 class AppGUITabs(QMainWindow):
@@ -33,11 +34,14 @@ class MyTableWidget(QWidget):
         super(QWidget, self).__init__(parent)
         self.layout = QVBoxLayout(self)
 
+        self.loadButton = QPushButton(self) #neu
+        self.loadButton.setText("Config")
+        #self.loadButton.clicked.connect(...)
+        
         #initialize tab screen
         self.tabs = QTabWidget()
-        #self.tab1 = XMLViewer()
-        self.tab1 = QWidget()
-        self.tab2 = QWidget()
+        self.tab1 = XMLViewer()
+        self.tab2 = mzMLTableView()
         self.tab3 = mzTabTableWidget()
         self.tab4 = Window()
         self.tab5 = App()
@@ -52,6 +56,7 @@ class MyTableWidget(QWidget):
         self.tabs.addTab(self.tab5, "Spectrum Viewer")
 
         #add tabs to widget
+        self.layout.addWidget(self.loadButton)
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 

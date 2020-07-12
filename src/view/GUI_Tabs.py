@@ -7,7 +7,7 @@ from mzTabTableWidget import mzTabTableWidget
 from GUI_FastaViewer import Window
 from SpectrumWidget import SpectrumWidget
 from ErrorWidget import ErrorWidget
-sys.path.insert(0, "../apps")
+sys.path.insert(0, '../apps')
 from SpecViewer import App
 from XMLViewer import XMLViewer
 from mzMLTableView import mzMLTableView

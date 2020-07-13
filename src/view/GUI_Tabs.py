@@ -64,10 +64,12 @@ class MyTableWidget(QWidget):
     def LFQ(self):
 
         fastapath = self.tab4.path
+        tsvpath = self.tab2.path
 
         print("path to fasta = " + fastapath)
+        print("path to tsv = " + tsvpath)
 
-        if fastapath != "":
+        if (fastapath != "") & (tsvpath != ""):
             self.tab3.readFile("/home/taiki/Uni/SS20/PYGUI/test.mzTab")
 
 

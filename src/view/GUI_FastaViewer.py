@@ -13,7 +13,7 @@ from PyQt5.QtGui import QFont, QColor, QTextCharFormat, QTextCursor
 from PyQt5.QtCore import *  # Qt, QUrl
 # from dictionaries import Dict
 sys.path.insert(0, '../examples')
-from Logic_LoadFasta_FastaViewer import*  # NOQA: E402
+from LoadFasta_FastaViewer import*  # NOQA: E402
 
 
 class Window(QMainWindow):
@@ -208,7 +208,12 @@ class Window(QMainWindow):
         return cut
     # defining the function for load button to get path of database
 
-    def loadFile(self):
+    def loadPath(self):
+        self.filename = QFileDialog.getOpenFileName()
+        self.loadFile(self.filename[0])
+
+
+    def loadFile(self, fasta_path):
         """Gets QMainWindow and opens a QFileDialog and loads path
     Parameters
     ----------
@@ -219,16 +224,15 @@ class Window(QMainWindow):
     nothing , it changes the QMainWindow so that the user can see that a file
     has been loaded
     """
-        self.filename = QFileDialog.getOpenFileName()
-        self.path = self.filename[0]
+        #self.filename = QFileDialog.getOpenFileName()
+        #self.path = path_array[0]
         self.fileloaded = 1
         # loading the lists before searching in order to make the search faster
-        self.dictKeyAccession, self.proteinList, self.proteinNameList, self.proteinOSList, self.dictKeyAccessionDECOY, self.proteinListDECOY, self.proteinNameListDECOY, self.proteinOSListDECOY = Logic_LoadFasta_FastaViewer.protein_dictionary(
-            self.path)
+        self.dictKeyAccession, self.proteinList, self.proteinNameList, self.proteinOSList, self.dictKeyAccessionDECOY, self.proteinListDECOY, self.proteinNameListDECOY, self.proteinOSListDECOY = LoadFasta_FastaViewer.protein_dictionary(
+            fasta_path)
         self.datalabel.setText("Data loaded")
         for i in range(len(self.dictKeyAccession)):
             ID = list(self.dictKeyAccession.keys())[i]
-            Protein = self.proteinList[i]
             Proteinname = self.proteinNameList[i]
             OS = self.proteinOSList[i]
             self.cg = QtWidgets.QTreeWidgetItem(self.tw)
@@ -236,6 +240,7 @@ class Window(QMainWindow):
             self.cg.setData(1, 0, OS)
             self.cg.setData(2, 0, Proteinname)
         self.tw.itemClicked.connect(self.clickTreeItem)
+
 
     # defining functions to display the protein sequence when TreeItem is clicked
 

@@ -147,7 +147,7 @@ class MyTableWidget(QWidget):
             os.chdir(self.loadedFolder)
             os.system(command)
 
-            for file in glob.glob("*.mzTab"):
+            for file in glob.glob("*.mzTab.tmp"):
                 self.tab3.readFile(file)
 
 

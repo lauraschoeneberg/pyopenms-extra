@@ -242,6 +242,14 @@ class mzMLTableView(QWidget):
             rt = timeit.default_timer() - starttime
             print("Runtime of loadBtnFn : ", rt)
 
+    def loadDir(self, filepath: str):
+        Files = fh.getFiles(self, filepath)
+        delimiters = ["_"]
+        preparedFiles = fh.tagfiles(self, Files, delimiters[0])
+        rawTable = fh.createRawTable(self, preparedFiles, filepath)
+        Tdf.setTable(self, rawTable)
+        self.drawTable()
+
     def loadFile(self):
         """
         provides a filedialog to load an additional file to the dataframe

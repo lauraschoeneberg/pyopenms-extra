@@ -94,6 +94,7 @@ class MyTableWidget(QWidget):
         if not (i == QMessageBox.Cancel):
             dialog = QFileDialog(self)
             self.loadedFolder = dialog.getExistingDirectory()
+            print(self.loadedFolder)
 
             os.chdir(self.loadedFolder)
             for file in glob.glob("*.fasta"):
@@ -120,27 +121,27 @@ class MyTableWidget(QWidget):
 
         if len(mzML) == len(idXML):
 
-            command = "ProteomicsLFQ -in \n"
+            command = "ProteomicsLFQ -in    "
 
             for file in mzML:
-                command += "    " + file + " \n"
+                command += file + " "
 
-            command += "    -ids \n"
+            command += "-ids "
 
             for file in idXML:
-                command += "    " + file + " \n"
+                command += file + " "
 
-            command += "    -design " + self.loadedTsv + " \n"
-            command += "    -fasta " + self.loadedFasta + " \n"
-            command += "    -Alignment:max_rt_shift 0 \n" \
-                       "    -targeted_only true \n" \
-                       "    -transfer_ids false \n" \
-                       "    -mass_recalibration false \n" \
-                       "    -out_cxml BSA.consensusXML.tmp \n" \
-                       "    -out_msstats BSA.csv.tmp \n" \
-                       "    -out BSA.mzTab.tmp \n" \
-                       "    -threads 1 \n" \
-                       "    -proteinFDR 0.3"
+            command += "-design " + self.loadedTsv + " "
+            command += "-fasta " + self.loadedFasta + " "
+            command += "-Alignment:max_rt_shift 0 " \
+                       "-targeted_only true " \
+                       "-transfer_ids false " \
+                       "-mass_recalibration false " \
+                       "-out_cxml BSA.consensusXML.tmp " \
+                       "-out_msstats BSA.csv.tmp " \
+                       "-out BSA.mzTab.tmp " \
+                       "-threads 1 " \
+                       "-proteinFDR 0.3"
 
             print(command)
             os.chdir(self.loadedFolder)

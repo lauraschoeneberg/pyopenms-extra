@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QAction, QTabWidget, QVBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QAction, QTabWidget, QVBoxLayout, QMessageBox, QFileDialog
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 
@@ -30,11 +30,18 @@ class AppGUITabs(QMainWindow):
 
         self.show()
 
+
+        
+
 class MyTableWidget(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
         self.layout = QVBoxLayout(self)
 
+        self.initButton = QPushButton(self) #neu1
+        self.initButton.setText("Load Data")
+        self.initButton.clicked.connect(self.show_popup) #neu1
+        
         self.loadButton = QPushButton(self) #neu
         self.loadButton.setText("Run ProteomicsLFQ")
         self.loadButton.clicked.connect(self.LFQ)
@@ -57,10 +64,30 @@ class MyTableWidget(QWidget):
         self.tabs.addTab(self.tab5, "Spectrum Viewer")
 
         #add tabs to widget
+        self.layout.addWidget(self.initButton)
         self.layout.addWidget(self.loadButton)
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
+    def show_popup(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Want data to be loaded automatically?  ")
+        msg.setIcon(QMessageBox.Question)
+        msg.setDetailedText("If you choose to load data automatically, please enter the file that contains entire data (for different widgets). Otherwise, please enter data manually through widgets. Thank you.")
+        msg.setStandardButtons(QMessageBox.Yes|QMessageBox.Cancel)
+        msg.buttonClicked.connect(self.popupbutton_clicked)
+                
+        x = msg.exec_()
+
+    def popupbutton_clicked(self,i):
+        #i is either 'Yes' or 'Cancel'
+        if not (i == QMessageBox.Cancel):
+          options = QFileDialog.Options()
+          file, _ = QFileDialog.getOpenFileName(
+              self, "QFileDialog.getOpenFileName()", "", "All Files (*);;tsv (*.tsv);;csv (*.csv);;fasta (*.fasta);; mzML (*.mzML);; ini (*.ini)", options=options)
+          
+            
     def LFQ(self):
 
         fastapath = self.tab4.path
@@ -70,7 +97,7 @@ class MyTableWidget(QWidget):
         print("path to tsv = " + tsvpath)
 
         if (fastapath != "") & (tsvpath != ""):
-            self.tab3.readFile("/home/taiki/Uni/SS20/PYGUI/test.mzTab")
+            self.tab3.readFile("../examples/data/iPRG2015.mzTab")
 
 
 if __name__== '__main__':

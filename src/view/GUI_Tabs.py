@@ -110,6 +110,7 @@ class MyTableWidget(QWidget):
 
             if self.loadedIni == "":
                 os.system("ProteomicsLFQ -write_ini example.ini")
+                self.tab1.generateTreeWidgetItem("example.ini")
                 self.loadedIni = "example.ini"
 
             for file in glob.glob("*.tsv"):

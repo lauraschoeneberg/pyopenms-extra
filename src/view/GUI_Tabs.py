@@ -108,6 +108,10 @@ class MyTableWidget(QWidget):
                 self.tab1.generateTreeWidgetItem(file)
                 self.loadedIni = file
 
+            if self.loadedIni == "":
+                os.system("ProteomicsLFQ -write_ini example.ini")
+                self.loadedIni = "example.ini"
+
             for file in glob.glob("*.tsv"):
                 TableDataFrame.setTable(self.tab2, FileHandler.importTable(self.tab2, file))
                 self.tab2.drawTable()

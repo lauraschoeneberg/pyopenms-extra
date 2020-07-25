@@ -126,9 +126,11 @@ class MyTableWidget(QWidget):
 
 
     def loadFasta(self):
-        fileName = QFileDialog.getOpenFileName()
-        self.tab4.loadFile(fileName[0])
-        self.loadedFasta = fileName[0]
+        fileDialog = QFileDialog.getOpenFileName(self, "Choose Fasta","","Fasta files (*.fasta)",
+                                                 "Fasta files (*.fasta)")
+        fileName = fileDialog[0]
+        self.tab4.loadFile(fileName)
+        self.loadedFasta = fileName
 
     def PopupTsv(self):
         msg = QMessageBox()
@@ -140,8 +142,10 @@ class MyTableWidget(QWidget):
         x = msg.exec_()
 
     def loadTsv(self):
-        fileName = QFileDialog.getOpenFileName()
-        TableDataFrame.setTable(self.tab2, FileHandler.importTable(self.tab2, fileName[0]))
+        fileDialog = QFileDialog.getOpenFileName(self, "Choose .tsv","",".tsv files (*.tsv)",
+                                                 ".tsv files (*.tsv)")
+        fileName = fileDialog[0]
+        TableDataFrame.setTable(self.tab2, FileHandler.importTable(self.tab2, fileName))
         self.tab2.drawTable()
         self.loadedTsv = fileName[0]
 

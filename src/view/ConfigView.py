@@ -50,14 +50,20 @@ class ConfigView(QWidget):
         self.setLayout(layout)
         self.resize(500, 720)
 
-    def openXML(self):
+    def openXML(self, path):
         """
         Loads a XML file with .ini tag, parses the xml into ET.ElementTree
         calls the drawTree function to draw a Tree with the loaded xml
         """
+
+        """
         file, _ = QFileDialog.getOpenFileName(
             self, "QFileDialog.getOpenFileName()", "",
             "All Files (*);;ini (*.ini)")
+        """
+
+        file = path
+
         if file:
             self.tree = parse(file)
             self.drawTree()

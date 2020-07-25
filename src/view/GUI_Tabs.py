@@ -5,13 +5,10 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QAc
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 import glob
-<<<<<<< HEAD
 sys.path.append('../apps')
 sys.path.append('../model')
 sys.path.append('../controller')
 
-=======
->>>>>>> origin/Fabian
 from filehandler import FileHandler
 from tableDataFrame import TableDataFrame
 
@@ -112,8 +109,13 @@ class MyTableWidget(QWidget):
                 self.loadedFasta = file
 
             for file in glob.glob("*.ini"):
-                self.tab1.generateTreeWidgetItem(file)
+                self.tab1.openXML(file)
                 self.loadedIni = file
+
+            if self.loadedIni == "":
+                os.system("ProteomicsLFQ -write_ini generated.ini")
+                self.tab1.openXML("generated.ini")
+                self.loadedIni = "generated.ini"
 
             if self.loadedIni == "":
                 os.system("ProteomicsLFQ -write_ini example.ini")

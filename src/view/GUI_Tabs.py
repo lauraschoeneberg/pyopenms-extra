@@ -115,6 +115,19 @@ class MyTableWidget(QWidget):
             if self.loadedTsv == "":
                 self.tab2.loadDir(self.loadedFolder)
 
+    def PopupFolder(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Please choose a Project Folder \n (must be the one containing the mzML and idXML files)")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.buttonClicked.connect(self.loadFolder)
+
+        x = msg.exec_()
+
+    def loadFolder(self):
+        dialog = QFileDialog(self)
+        self.loadedFolder = dialog.getExistingDirectory()
+
     def PopupFasta(self):
         msg = QMessageBox()
         msg.setWindowTitle("Attention!")
@@ -150,6 +163,9 @@ class MyTableWidget(QWidget):
         self.loadedTsv = fileName[0]
 
     def LFQ(self):
+
+        if self.loadedFolder == "":
+            self.PopupFolder()
 
         if self.loadedFasta == "" and self.tab4.path == "":
             self.PopupFasta()

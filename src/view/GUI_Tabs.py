@@ -189,6 +189,8 @@ class MyTableWidget(QWidget):
         mzML = glob.glob("*.mzML")
         idXML = glob.glob("*.idXML")
 
+        self.tab1.saveFile("")
+
         if len(mzML) == len(idXML):
 
             command = "ProteomicsLFQ -in    "
@@ -203,10 +205,7 @@ class MyTableWidget(QWidget):
 
             command += "-design " + self.loadedTsv + " "
             command += "-fasta " + self.loadedFasta + " "
-            command += "-Alignment:max_rt_shift 0 " \
-                       "-targeted_only true " \
-                       "-transfer_ids false " \
-                       "-mass_recalibration false " \
+            command += "-ini tmp.ini" \
                        "-out_cxml BSA.consensusXML.tmp " \
                        "-out_msstats BSA.csv.tmp " \
                        "-out BSA.mzTab.tmp " \
@@ -262,6 +261,8 @@ class MyTableWidget(QWidget):
 
             for file in glob.glob("*.mzTab.tmp"):
                 self.tab3.readFile(file)
+
+            os.remove("tmp.ini")
 
 
 

@@ -98,7 +98,6 @@ class MyTableWidget(QWidget):
         # i is either 'Yes' or 'Cancel'
         if i.text() == "&Yes":
             self.AutoLoadedData = True #neu
-        if not (i == QMessageBox.Cancel):
             dialog = QFileDialog(self)
             self.loadedFolder = dialog.getExistingDirectory()
             print(self.loadedFolder)

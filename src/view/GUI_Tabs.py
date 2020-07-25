@@ -121,12 +121,61 @@ class MyTableWidget(QWidget):
                 self.loadedIni = "example.ini"
 
             for file in glob.glob("*.tsv"):
+                self.loadedTsv = file
                 TableDataFrame.setTable(self.tab2, FileHandler.importTable(self.tab2, file))
                 self.tab2.drawTable()
-                self.loadedTsv = file
+
+            print(self.loadedTsv)
 
             if self.loadedTsv == "":
                 self.tab2.loadDir(self.loadedFolder)
+
+    def PopupFolder(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Please choose a Project Folder \n (must be the one containing the mzML and idXML files)")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.buttonClicked.connect(self.loadFolder)
+
+        x = msg.exec_()
+
+    def loadFolder(self):
+        dialog = QFileDialog(self)
+        self.loadedFolder = dialog.getExistingDirectory()
+
+    def PopupFasta(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Please choose a Fasta file")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.buttonClicked.connect(self.loadFasta)
+
+        x = msg.exec_()
+
+
+    def loadFasta(self):
+        fileDialog = QFileDialog.getOpenFileName(self, "Choose Fasta","","Fasta files (*.fasta)",
+                                                 "Fasta files (*.fasta)")
+        fileName = fileDialog[0]
+        self.tab4.loadFile(fileName)
+        self.loadedFasta = fileName
+
+    def PopupTsv(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Please choose a .tsv")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.buttonClicked.connect(self.loadTsv)
+
+        x = msg.exec_()
+
+    def loadTsv(self):
+        fileDialog = QFileDialog.getOpenFileName(self, "Choose .tsv","",".tsv files (*.tsv)",
+                                                 ".tsv files (*.tsv)")
+        fileName = fileDialog[0]
+        TableDataFrame.setTable(self.tab2, FileHandler.importTable(self.tab2, fileName))
+        self.tab2.drawTable()
+        self.loadedTsv = fileName[0]
 
     def LFQ(self):
         if not self.AutoLoadedData:
@@ -162,13 +211,28 @@ class MyTableWidget(QWidget):
                        "-threads 1 " \
                        "-proteinFDR 0.3"
 
+        if self.loadedFolder == "":
+            self.PopupFolder()
+
+        if self.loadedFasta == "" and self.tab4.path == "":
+            self.PopupFasta()
+
+        else:
+              self.loadedFasta = self.tab4.path
+
+        if self.loadedTsv == "" and self.tab2.path == "":
+             self.PopupTsv()
+
+        else:
+            self.loadedTsv = self.tab2.path
+
         os.chdir(self.loadedFolder)
-        mzML = glob.glob("*.mzML")
-        idXML = glob.glob("*.idXML")
+        mzML = sorted(glob.glob("*.mzML"))
+        idXML = sorted(glob.glob("*.idXML"))
 
         if len(mzML) == len(idXML):
 
-            command = "ProteomicsLFQ -in    "
+            command = "ProteomicsLFQ -in "
 
             for file in mzML:
                 command += file + " "

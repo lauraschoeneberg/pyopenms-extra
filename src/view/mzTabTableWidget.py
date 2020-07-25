@@ -3,8 +3,10 @@ mzTabTableWidget
 ----------------
 This script allows the user to transfer information about proteins and psms from a mzTab file into two tables, 
 one containing the proteins, the other one containing the psms.
+
 By clicking on a row, the tables get updated regarding their listed proteins or psms.
 Once you choose a protein/psm, the table displays only those psms/proteins that are linked to one another.
+
 This tool is designed to accept mzTab files. It is required to save those files under '.../examples/data/' or 
 change the path within the InitWindow.
 """
@@ -62,10 +64,6 @@ class mzTabTableWidget(QWidget):
         self.tablePRTFiltered.setHidden(True)
         self.tablePSMFiltered.setHidden(True)
 
-        self.loadButton = QtWidgets.QPushButton(self)
-        self.loadButton.setText("load")
-        self.loadButton.clicked.connect(self.loadFile)
-
         self.tablePRTFull.itemClicked.connect(self.PRTClicked)
         self.tablePRTFiltered.itemClicked.connect(self.PRTClicked)
         self.tablePSMFull.itemClicked.connect(self.PSMClicked)
@@ -76,8 +74,6 @@ class mzTabTableWidget(QWidget):
         self.tablePSMFull.itemDoubleClicked.connect(self.browsePSM)
         self.tablePSMFiltered.itemDoubleClicked.connect(self.browsePSM)
 
-        self.vBoxPRT.addWidget(self.loadButton)
-                
         self.vBoxPRT.addWidget(self.tablePRTFull)
         self.vBoxPRT.addWidget(self.tablePRTFiltered)
 
@@ -90,7 +86,7 @@ class mzTabTableWidget(QWidget):
         self.setLayout(self.outerVBox)
         self.show()
 
-    def loadFile(self):
+    def readFile(self, file):
         if self.fileLoaded:
             self.tablePRTFull.clear()
             self.tablePSMFull.clear()
@@ -114,9 +110,7 @@ class mzTabTableWidget(QWidget):
             self.PRTColumn = [True]
             self.PSMColumn = [True]
 
-        self.filename = QFileDialog.getOpenFileName()
-
-        self.parser(self.filename[0])
+        self.parser(file)
 
         self.PRTColumn *= len(self.PRTFull[1])
         self.PSMColumn *= len(self.PSMFull[1])
@@ -200,10 +194,12 @@ class mzTabTableWidget(QWidget):
                     k += 1
                     j = 0
                 break
-        self.tablePRTFull.resizeColumnsToContents() # resize columns
-        self.tablePSMFull.resizeColumnsToContents() # resize columns
-        self.tablePRTFiltered.resizeColumnsToContents() # resize columns
-        self.tablePSMFiltered.resizeColumnsToContents() # resize columns
+
+        self.tablePRTFull.resizeColumnsToContents()  # resize columns
+        self.tablePSMFull.resizeColumnsToContents()  # resize columns
+        self.tablePRTFiltered.resizeColumnsToContents()  # resize columns
+        self.tablePSMFiltered.resizeColumnsToContents()  # resize columns
+
     def hidePRTColumns(self):
         """hides constant columns in PRT table by default by checking if every value equals"""
         i = 0
@@ -318,8 +314,3 @@ class mzTabTableWidget(QWidget):
 
         webbrowser.open("https://www.uniprot.org/uniprot/" + accession)
 
-"""
-App = QApplication(sys.argv)
-window = Window()
-sys.exit(App.exec())
-"""

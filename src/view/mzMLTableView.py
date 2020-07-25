@@ -20,6 +20,9 @@ class mzMLTableView(QWidget):
     Main Widget of the TableEditor app
     """
     def __init__(self, *args):
+
+        self.path = ""
+
         # set variable self.testForTime to True to see all Runtimes
         self.testForTime = False
         if self.testForTime:
@@ -165,6 +168,8 @@ class mzMLTableView(QWidget):
             self, "QFileDialog.getOpenFileName()", "",
             "All Files (*);;tsv (*.tsv);; csv (*.csv)", options=options)
 
+        self.path = file
+
         if self.testForTime:
             starttime = timeit.default_timer()
             print("Starttime of importBtn : ", starttime)
@@ -236,6 +241,14 @@ class mzMLTableView(QWidget):
         if self.testForTime:
             rt = timeit.default_timer() - starttime
             print("Runtime of loadBtnFn : ", rt)
+
+    def loadDir(self, filepath: str):
+        Files = fh.getFiles(self, filepath)
+        delimiters = ["_"]
+        preparedFiles = fh.tagfiles(self, Files, delimiters[0])
+        rawTable = fh.createRawTable(self, preparedFiles, filepath)
+        Tdf.setTable(self, rawTable)
+        self.drawTable()
 
     def loadFile(self):
         """

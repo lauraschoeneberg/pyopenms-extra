@@ -5,17 +5,19 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QAc
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 import glob
+<<<<<<< HEAD
 sys.path.append('../apps')
 sys.path.append('../model')
 sys.path.append('../controller')
 
+=======
+>>>>>>> origin/Fabian
 from filehandler import FileHandler
 from tableDataFrame import TableDataFrame
 
 from mzTabTableWidget import mzTabTableWidget
 from GUI_FastaViewer import Window
 from ErrorWidget import ErrorWidget
-
 
 from SpecViewer import App
 from ConfigView import ConfigView
@@ -51,7 +53,7 @@ class MyTableWidget(QWidget):
         self.loadedTsv = ""
 
         self.AutoLoadedData = False #neu
-        
+
         self.initButton = QPushButton(self)  # neu1
         self.initButton.setText("Load Data")
         self.initButton.clicked.connect(self.show_popup)  # neu1
@@ -99,6 +101,7 @@ class MyTableWidget(QWidget):
         # i is either 'Yes' or 'Cancel'
         if i.text() == "&Yes":
             self.AutoLoadedData = True #neu
+        if not (i == QMessageBox.Cancel):
             dialog = QFileDialog(self)
             self.loadedFolder = dialog.getExistingDirectory()
             print(self.loadedFolder)
@@ -159,11 +162,39 @@ class MyTableWidget(QWidget):
                        "-threads 1 " \
                        "-proteinFDR 0.3"
 
+        os.chdir(self.loadedFolder)
+        mzML = glob.glob("*.mzML")
+        idXML = glob.glob("*.idXML")
+
+        if len(mzML) == len(idXML):
+
+            command = "ProteomicsLFQ -in    "
+
+            for file in mzML:
+                command += file + " "
+
+            command += "-ids "
+
+            for file in idXML:
+                command += file + " "
+
+            command += "-design " + self.loadedTsv + " "
+            command += "-fasta " + self.loadedFasta + " "
+            command += "-Alignment:max_rt_shift 0 " \
+                       "-targeted_only true " \
+                       "-transfer_ids false " \
+                       "-mass_recalibration false " \
+                       "-out_cxml BSA.consensusXML.tmp " \
+                       "-out_msstats BSA.csv.tmp " \
+                       "-out BSA.mzTab.tmp " \
+                       "-threads 1 " \
+                       "-proteinFDR 0.3"
+
             print(command)
             os.chdir(self.loadedFolder)
             os.system(command)
 
-            for file in glob.glob("*.mzTab"):
+            for file in glob.glob("*.mzTab.tmp"):
                 self.tab3.readFile(file)
 
 

@@ -91,7 +91,7 @@ class MyTableWidget(QWidget):
 
     def popupbutton_clicked(self, i):
         # i is either 'Yes' or 'Cancel'
-        if not (i == QMessageBox.Cancel):
+        if i.text() == "&Yes":
             dialog = QFileDialog(self)
             self.loadedFolder = dialog.getExistingDirectory()
             print(self.loadedFolder)

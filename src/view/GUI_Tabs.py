@@ -106,9 +106,11 @@ class MyTableWidget(QWidget):
                 self.loadedIni = file
 
             for file in glob.glob("*.tsv"):
+                self.loadedTsv = file
                 TableDataFrame.setTable(self.tab2, FileHandler.importTable(self.tab2, file))
                 self.tab2.drawTable()
-                self.loadedTsv = file
+
+            print(self.loadedTsv)
 
             if self.loadedTsv == "":
                 self.tab2.loadDir(self.loadedFolder)
@@ -116,12 +118,12 @@ class MyTableWidget(QWidget):
     def LFQ(self):
 
         os.chdir(self.loadedFolder)
-        mzML = glob.glob("*.mzML")
-        idXML = glob.glob("*.idXML")
+        mzML = sorted(glob.glob("*.mzML"))
+        idXML = sorted(glob.glob("*.idXML"))
 
         if len(mzML) == len(idXML):
 
-            command = "ProteomicsLFQ -in    "
+            command = "ProteomicsLFQ -in "
 
             for file in mzML:
                 command += file + " "

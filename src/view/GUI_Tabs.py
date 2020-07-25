@@ -147,13 +147,13 @@ class MyTableWidget(QWidget):
 
     def LFQ(self):
 
-        if self.loadedFasta == "":
+        if self.loadedFasta == "" and self.tab4.path == "":
             self.PopupFasta()
 
         else:
               self.loadedFasta = self.tab4.path
 
-        if self.loadedTsv == "":
+        if self.loadedTsv == "" and self.tab2.path == "":
              self.PopupTsv()
 
         else:

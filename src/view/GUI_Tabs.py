@@ -5,6 +5,10 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QAc
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 import glob
+sys.path.append('../apps')
+sys.path.append('../model')
+sys.path.append('../controller')
+
 from filehandler import FileHandler
 from tableDataFrame import TableDataFrame
 
@@ -12,7 +16,7 @@ from mzTabTableWidget import mzTabTableWidget
 from GUI_FastaViewer import Window
 from ErrorWidget import ErrorWidget
 
-sys.path.insert(0, '../apps')
+
 from SpecViewer import App
 from ConfigView import ConfigView
 from mzMLTableView import mzMLTableView

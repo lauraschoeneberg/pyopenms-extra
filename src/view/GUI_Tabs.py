@@ -115,7 +115,49 @@ class MyTableWidget(QWidget):
             if self.loadedTsv == "":
                 self.tab2.loadDir(self.loadedFolder)
 
+    def PopupFasta(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Please choose a Fasta file")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.buttonClicked.connect(self.loadFasta)
+
+        x = msg.exec_()
+
+
+    def loadFasta(self):
+        fileName = QFileDialog.getOpenFileName()
+        self.tab4.loadFile(fileName[0])
+        self.loadedFasta = fileName[0]
+
+    def PopupTsv(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Please choose a .tsv")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.buttonClicked.connect(self.loadTsv)
+
+        x = msg.exec_()
+
+    def loadTsv(self):
+        fileName = QFileDialog.getOpenFileName()
+        TableDataFrame.setTable(self.tab2, FileHandler.importTable(self.tab2, fileName[0]))
+        self.tab2.drawTable()
+        self.loadedTsv = fileName[0]
+
     def LFQ(self):
+
+        if self.loadedFasta == "":
+            self.PopupFasta()
+
+        else:
+              self.loadedFasta = self.tab4.path
+
+        if self.loadedTsv == "":
+             self.PopupTsv()
+
+        else:
+            self.loadedTsv = self.tab2.path
 
         os.chdir(self.loadedFolder)
         mzML = sorted(glob.glob("*.mzML"))

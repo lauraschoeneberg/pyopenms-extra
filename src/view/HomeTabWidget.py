@@ -19,6 +19,8 @@ class HomeTabWidget(QMainWindow):
         self.setStyleSheet("background-color:lightgrey;");
         self.HomeWindow()
         
+        self.loadedThreads = "1"
+        self.loadedFDR = "0.3"
 
     def HomeWindow(self):
         

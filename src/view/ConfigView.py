@@ -243,12 +243,15 @@ class ConfigView(QWidget):
 
         return typechecked
 
-    def saveFile(self, name):
-        if name != "":
-            file, _ = QFileDialog.getSaveFileName(
-                self, "QFileDialog.getSaveFileName()", "",
-                "All Files (*);;ini (*.ini)")
-        else:
-            file = "tmp.ini"
+    def saveTmpFile(self):
+        file = "tmp.ini"
+        if file:
+            self.tree.write(file)
+
+    def saveFile(self):
+        file, _ = QFileDialog.getSaveFileName(
+            self, "QFileDialog.getSaveFileName()", "",
+            "All Files (*);;ini (*.ini)")
+
         if file:
             self.tree.write(file)

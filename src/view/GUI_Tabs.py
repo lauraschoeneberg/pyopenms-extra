@@ -189,7 +189,7 @@ class MyTableWidget(QWidget):
         mzML = glob.glob("*.mzML")
         idXML = glob.glob("*.idXML")
 
-        self.tab1.saveFile("")
+        self.tab1.saveTmpFile()
 
         if len(mzML) == len(idXML):
 

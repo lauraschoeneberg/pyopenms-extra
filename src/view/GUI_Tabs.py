@@ -1,7 +1,7 @@
 import os
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QAction, QTabWidget, QVBoxLayout, \
-    QMessageBox, QFileDialog
+    QMessageBox, QFileDialog, QHBoxLayout
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 import glob
@@ -11,6 +11,7 @@ from tableDataFrame import TableDataFrame
 from mzTabTableWidget import mzTabTableWidget
 from GUI_FastaViewer import Window
 from ErrorWidget import ErrorWidget
+from HomeTabWidget import HomeTabWidget
 
 sys.path.insert(0, '../apps')
 from SpecViewer import App
@@ -29,10 +30,10 @@ class AppGUITabs(QMainWindow):
         self.height = 200
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        # setTab3()
+        
         self.table_widget = MyTableWidget(self)
         self.setCentralWidget(self.table_widget)
-        
+
         self.show()
 
 
@@ -40,38 +41,45 @@ class MyTableWidget(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
         self.layout = QVBoxLayout(self)
+        
 
         self.loadedFolder = ""
         self.loadedFasta = ""
         self.loadedIni = ""
         self.loadedTsv = ""
 
-        self.AutoLoadedData = False #neu
-        
-        self.initButton = QPushButton(self)  # neu1
+        self.initButton = QPushButton(self)  
         self.initButton.setText("Load Data")
-        self.initButton.clicked.connect(self.show_popup)  # neu1
-
-        self.loadButton = QPushButton(self)  # neu
+        self.initButton.setFixedSize(220,25)
+        self.initButton.clicked.connect(self.show_popup)  
+        #self.buttonLayout = QHBoxLayout(self.initButton)
+        #self.layout.addLayout(self.buttonLayout)
+        self.loadButton = QPushButton(self) 
         self.loadButton.setText("Run ProteomicsLFQ")
+        self.loadButton.setFixedSize(220,25)
         self.loadButton.clicked.connect(self.LFQ)
+        #self.buttonLayout.addWidget(self.initButton)
+        #self.buttonLayout.addWidget(self.loadButton) 
+        
 
         # initialize tab screen
         self.tabs = QTabWidget()
-        self.tab1 = ConfigView()
-        self.tab2 = mzMLTableView()
-        self.tab3 = mzTabTableWidget()
-        self.tab4 = Window()
-        self.tab5 = App()
+        self.tab1 = HomeTabWidget()
+        self.tab2 = ConfigView()
+        self.tab3 = mzMLTableView()
+        self.tab4 = mzTabTableWidget()
+        self.tab5 = Window()
+        self.tab6 = App()
 
         self.tabs.resize(300, 200)
 
         # add tabs
-        self.tabs.addTab(self.tab1, "Ini-Config")
-        self.tabs.addTab(self.tab2, "Experimental Design")
-        self.tabs.addTab(self.tab3, "PSM/PRT Table")
-        self.tabs.addTab(self.tab4, "Fasta-Viewer")
-        self.tabs.addTab(self.tab5, "Spectrum Viewer")
+        self.tabs.addTab(self.tab1, "Home")
+        self.tabs.addTab(self.tab2, "Ini-Config")
+        self.tabs.addTab(self.tab3, "Experimental Design")
+        self.tabs.addTab(self.tab4, "PSM/PRT Table")
+        self.tabs.addTab(self.tab5, "Fasta-Viewer")
+        self.tabs.addTab(self.tab6, "Spectrum Viewer")
 
         # add tabs to widget
         self.layout.addWidget(self.initButton)
@@ -79,6 +87,7 @@ class MyTableWidget(QWidget):
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
+        
     def show_popup(self):
         msg = QMessageBox()
         msg.setWindowTitle("Attention!")
@@ -94,41 +103,100 @@ class MyTableWidget(QWidget):
     def popupbutton_clicked(self, i):
         # i is either 'Yes' or 'Cancel'
         if i.text() == "&Yes":
-            self.AutoLoadedData = True #neu
             dialog = QFileDialog(self)
             self.loadedFolder = dialog.getExistingDirectory()
             print(self.loadedFolder)
 
             os.chdir(self.loadedFolder)
             for file in glob.glob("*.fasta"):
-                self.tab4.loadFile(file)
+                self.tab5.loadFile(file)
                 self.loadedFasta = file
 
             for file in glob.glob("*.ini"):
-                self.tab1.generateTreeWidgetItem(file)
+                self.tab2.generateTreeWidgetItem(file)
                 self.loadedIni = file
 
             for file in glob.glob("*.tsv"):
-                TableDataFrame.setTable(self.tab2, FileHandler.importTable(self.tab2, file))
-                self.tab2.drawTable()
                 self.loadedTsv = file
+                TableDataFrame.setTable(self.tab3, FileHandler.importTable(self.tab3, file))
+                self.tab3.drawTable()
+
+            print(self.loadedTsv)
 
             if self.loadedTsv == "":
-                self.tab2.loadDir(self.loadedFolder)
+                self.tab3.loadDir(self.loadedFolder)
+    
+    def PopupFolder(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Please choose a Project Folder \n (must be the one containing the mzML and idXML files)")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.buttonClicked.connect(self.loadFolder)
+
+        x = msg.exec_()
+
+    def loadFolder(self):
+        dialog = QFileDialog(self)
+        self.loadedFolder = dialog.getExistingDirectory()
+
+    def PopupFasta(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Please choose a Fasta file")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.buttonClicked.connect(self.loadFasta)
+
+        x = msg.exec_()
+
+
+    def loadFasta(self):
+        fileDialog = QFileDialog.getOpenFileName(self, "Choose Fasta","","Fasta files (*.fasta)",
+                                                 "Fasta files (*.fasta)")
+        fileName = fileDialog[0]
+        self.tab5.loadFile(fileName)
+        self.loadedFasta = fileName
+
+    def PopupTsv(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Please choose a .tsv")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.buttonClicked.connect(self.loadTsv)
+
+        x = msg.exec_()
+
+    def loadTsv(self):
+        fileDialog = QFileDialog.getOpenFileName(self, "Choose .tsv","",".tsv files (*.tsv)",
+                                                 ".tsv files (*.tsv)")
+        fileName = fileDialog[0]
+        TableDataFrame.setTable(self.tab3, FileHandler.importTable(self.tab3, fileName))
+        self.tab3.drawTable()
+        self.loadedTsv = fileName[0]
 
     def LFQ(self):
-        if not self.AutoLoadedData:
-            """self.loadedTsv = 
-            self.loadedFasta = 
-            self.loadedIni = """
-            
+
+        if self.loadedFolder == "":
+            self.PopupFolder()
+
+        if self.loadedFasta == "" and self.tab5.path == "":
+            self.PopupFasta()
+
+        else:
+              self.loadedFasta = self.tab5.path
+
+        if self.loadedTsv == "" and self.tab3.path == "":
+             self.PopupTsv()
+
+        else:
+            self.loadedTsv = self.tab3.path
+
         os.chdir(self.loadedFolder)
-        mzML = glob.glob("*.mzML")
-        idXML = glob.glob("*.idXML")
+        mzML = sorted(glob.glob("*.mzML"))
+        idXML = sorted(glob.glob("*.idXML"))
 
         if len(mzML) == len(idXML):
 
-            command = "ProteomicsLFQ -in    "
+            command = "ProteomicsLFQ -in "
 
             for file in mzML:
                 command += file + " "
@@ -147,15 +215,15 @@ class MyTableWidget(QWidget):
                        "-out_cxml BSA.consensusXML.tmp " \
                        "-out_msstats BSA.csv.tmp " \
                        "-out BSA.mzTab.tmp " \
-                       "-threads 1 " \
-                       "-proteinFDR 0.3"
+                       "-threads " + self.tab1.loadedThreads + " " \
+                       "-proteinFDR " + self.tab1.loadedFDR + " "
 
             print(command)
             os.chdir(self.loadedFolder)
             os.system(command)
 
-            for file in glob.glob("*.mzTab"):
-                self.tab3.readFile(file)
+            for file in glob.glob("*.mzTab.tmp"):
+                self.tab4.readFile(file)
 
 
 

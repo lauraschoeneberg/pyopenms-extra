@@ -13,7 +13,7 @@ from filehandler import FileHandler
 from tableDataFrame import TableDataFrame
 
 from mzTabTableWidget import mzTabTableWidget
-from GUI_FastaViewer import Window
+from GUI_FastaViewer import GUI_FastaViewer
 from ErrorWidget import ErrorWidget
 from HomeTabWidget import HomeTabWidget
 
@@ -44,12 +44,12 @@ class MyTableWidget(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
         self.layout = QVBoxLayout(self)
-
+        
         self.loadedFolder = ""
         self.loadedFasta = ""
         self.loadedIni = ""
         self.loadedTsv = ""
-
+        
         # add button to automatically load data into widgets
         self.initButton = QPushButton(self)  
         self.initButton.setText("Load Data")
@@ -68,7 +68,7 @@ class MyTableWidget(QWidget):
         self.tab2 = ConfigView()
         self.tab3 = mzMLTableView()
         self.tab4 = mzTabTableWidget()
-        self.tab5 = Window()
+        self.tab5 = GUI_FastaViewer()
         self.tab6 = App()
 
         self.tabs.resize(300, 200)
@@ -186,7 +186,9 @@ class MyTableWidget(QWidget):
                                                  ".tsv files (*.tsv)")
         fileName = fileDialog[0]
         TableDataFrame.setTable(self.tab3, FileHandler.importTable(self.tab3, fileName))
+        print(FileHandler.importTable(self.tab3, fileName))
         self.tab3.drawTable()
+
         self.loadedTsv = fileName[0]
 
     def LFQ(self):
@@ -280,4 +282,3 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = AppGUITabs()
     sys.exit(app.exec_())
-

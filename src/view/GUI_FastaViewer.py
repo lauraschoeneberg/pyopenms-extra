@@ -86,6 +86,7 @@ class Window(QMainWindow):
         nothing
         """
         super().__init__()
+        self.path = ""
         self.setFixedSize(635, 480)
         self.initUI()
 

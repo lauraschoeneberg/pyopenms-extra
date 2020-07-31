@@ -5,14 +5,18 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QAc
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 import glob
+sys.path.append('../apps')
+sys.path.append('../model')
+sys.path.append('../controller')
+
 from filehandler import FileHandler
 from tableDataFrame import TableDataFrame
 
 from mzTabTableWidget import mzTabTableWidget
 from GUI_FastaViewer import Window
 from ErrorWidget import ErrorWidget
+from HomeTabWidget import HomeTabWidget
 
-sys.path.insert(0, '../apps')
 from SpecViewer import App
 from ConfigView import ConfigView
 from mzMLTableView import mzMLTableView
@@ -29,10 +33,10 @@ class AppGUITabs(QMainWindow):
         self.height = 200
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        # setTab3()
+        
         self.table_widget = MyTableWidget(self)
         self.setCentralWidget(self.table_widget)
-
+        
         self.show()
 
 
@@ -46,30 +50,36 @@ class MyTableWidget(QWidget):
         self.loadedIni = ""
         self.loadedTsv = ""
 
-        self.initButton = QPushButton(self)  # neu1
+        # add button to automatically load data into widgets
+        self.initButton = QPushButton(self)  
         self.initButton.setText("Load Data")
-        self.initButton.clicked.connect(self.show_popup)  # neu1
+        self.initButton.setFixedSize(220,25)
+        self.initButton.clicked.connect(self.show_popup)  
 
-        self.loadButton = QPushButton(self)  # neu
+        # add button to run proteimicsLFQ command
+        self.loadButton = QPushButton(self)  
         self.loadButton.setText("Run ProteomicsLFQ")
+        self.loadButton.setFixedSize(220,25)
         self.loadButton.clicked.connect(self.LFQ)
 
         # initialize tab screen
         self.tabs = QTabWidget()
-        self.tab1 = ConfigView()
-        self.tab2 = mzMLTableView()
-        self.tab3 = mzTabTableWidget()
-        self.tab4 = Window()
-        self.tab5 = App()
+        self.tab1 = HomeTabWidget()
+        self.tab2 = ConfigView()
+        self.tab3 = mzMLTableView()
+        self.tab4 = mzTabTableWidget()
+        self.tab5 = Window()
+        self.tab6 = App()
 
         self.tabs.resize(300, 200)
 
         # add tabs
-        self.tabs.addTab(self.tab1, "Ini-Config")
-        self.tabs.addTab(self.tab2, "Experimental Design")
-        self.tabs.addTab(self.tab3, "PSM/PRT Table")
-        self.tabs.addTab(self.tab4, "Fasta-Viewer")
-        self.tabs.addTab(self.tab5, "Spectrum Viewer")
+        self.tabs.addTab(self.tab1, "Home")
+        self.tabs.addTab(self.tab2, "Ini-Config")
+        self.tabs.addTab(self.tab3, "Experimental Design")
+        self.tabs.addTab(self.tab4, "PSM/PRT Table")
+        self.tabs.addTab(self.tab5, "Fasta-Viewer")
+        self.tabs.addTab(self.tab6, "Spectrum Viewer")
 
         # add tabs to widget
         self.layout.addWidget(self.initButton)
@@ -78,6 +88,9 @@ class MyTableWidget(QWidget):
         self.setLayout(self.layout)
 
     def show_popup(self):
+        """
+            displays popup window that questions whether data should be loaded automatically
+        """
         msg = QMessageBox()
         msg.setWindowTitle("Attention!")
         msg.setText("Want data to be loaded automatically?  ")
@@ -90,30 +103,44 @@ class MyTableWidget(QWidget):
         x = msg.exec_()
 
     def popupbutton_clicked(self, i):
-        # i is either 'Yes' or 'Cancel'
+        """
+            when user selects 'Yes', data is loaded into the widgets based on its file type
+        """
+        
         if i.text() == "&Yes":
+            self.AutoLoadedData = True #neu
             dialog = QFileDialog(self)
             self.loadedFolder = dialog.getExistingDirectory()
             print(self.loadedFolder)
 
             os.chdir(self.loadedFolder)
             for file in glob.glob("*.fasta"):
-                self.tab4.loadFile(file)
+                self.tab5.loadFile(file)
                 self.loadedFasta = file
 
             for file in glob.glob("*.ini"):
-                self.tab1.generateTreeWidgetItem(file)
+                self.tab2.openXML(file)
                 self.loadedIni = file
+
+            if self.loadedIni == "":
+                os.system("ProteomicsLFQ -write_ini generated.ini")
+                self.tab2.openXML("generated.ini")
+                self.loadedIni = "generated.ini"
+
+            if self.loadedIni == "":
+                os.system("ProteomicsLFQ -write_ini example.ini")
+                self.tab2.generateTreeWidgetItem("example.ini")
+                self.loadedIni = "example.ini"
 
             for file in glob.glob("*.tsv"):
                 self.loadedTsv = file
-                TableDataFrame.setTable(self.tab2, FileHandler.importTable(self.tab2, file))
-                self.tab2.drawTable()
+                TableDataFrame.setTable(self.tab3, FileHandler.importTable(self.tab3, file))
+                self.tab3.drawTable()
 
             print(self.loadedTsv)
 
             if self.loadedTsv == "":
-                self.tab2.loadDir(self.loadedFolder)
+                self.tab3.loadDir(self.loadedFolder)
 
     def PopupFolder(self):
         msg = QMessageBox()
@@ -142,7 +169,7 @@ class MyTableWidget(QWidget):
         fileDialog = QFileDialog.getOpenFileName(self, "Choose Fasta","","Fasta files (*.fasta)",
                                                  "Fasta files (*.fasta)")
         fileName = fileDialog[0]
-        self.tab4.loadFile(fileName)
+        self.tab5.loadFile(fileName)
         self.loadedFasta = fileName
 
     def PopupTsv(self):
@@ -158,8 +185,8 @@ class MyTableWidget(QWidget):
         fileDialog = QFileDialog.getOpenFileName(self, "Choose .tsv","",".tsv files (*.tsv)",
                                                  ".tsv files (*.tsv)")
         fileName = fileDialog[0]
-        TableDataFrame.setTable(self.tab2, FileHandler.importTable(self.tab2, fileName))
-        self.tab2.drawTable()
+        TableDataFrame.setTable(self.tab3, FileHandler.importTable(self.tab3, fileName))
+        self.tab3.drawTable()
         self.loadedTsv = fileName[0]
 
     def LFQ(self):
@@ -167,17 +194,17 @@ class MyTableWidget(QWidget):
         if self.loadedFolder == "":
             self.PopupFolder()
 
-        if self.loadedFasta == "" and self.tab4.path == "":
+        if self.loadedFasta == "" and self.tab5.path == "":
             self.PopupFasta()
 
         else:
-              self.loadedFasta = self.tab4.path
+              self.loadedFasta = self.tab5.path
 
-        if self.loadedTsv == "" and self.tab2.path == "":
+        if self.loadedTsv == "" and self.tab3.path == "":
              self.PopupTsv()
 
         else:
-            self.loadedTsv = self.tab2.path
+            self.loadedTsv = self.tab3.path
 
         os.chdir(self.loadedFolder)
         mzML = sorted(glob.glob("*.mzML"))
@@ -204,15 +231,17 @@ class MyTableWidget(QWidget):
                        "-out_cxml BSA.consensusXML.tmp " \
                        "-out_msstats BSA.csv.tmp " \
                        "-out BSA.mzTab.tmp " \
-                       "-threads 1 " \
-                       "-proteinFDR 0.3"
+                       "-threads " + self.tab1.loadedThreads + " " \
+                       "-proteinFDR " + self.tab1.loadedFDR + " "
 
             print(command)
             os.chdir(self.loadedFolder)
             os.system(command)
 
             for file in glob.glob("*.mzTab.tmp"):
-                self.tab3.readFile(file)
+                self.tab4.readFile(file)
+
+            os.remove("tmp.ini")
 
 
 
@@ -220,3 +249,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = AppGUITabs()
     sys.exit(app.exec_())
+

@@ -8,15 +8,17 @@ from PyQt5.QtWidgets import (QWidget, QToolTip,
                              QGridLayout, QScrollArea, QPlainTextEdit,
                              QDesktopWidget, QLabel, QRadioButton,
                              QGroupBox, QSizePolicy, QCheckBox, QFileDialog,
-                             QTextEdit, QTextBrowser)
+                             QTextEdit, QTextBrowser, QInputDialog)
 from PyQt5.QtGui import QFont, QColor, QTextCharFormat, QTextCursor
-from PyQt5.QtCore import *  # Qt, QUrl
+from PyQt5.QtCore import Qt, QUrl
 # from dictionaries import Dict
 sys.path.insert(0, '../examples')
-from Logic_LoadFasta_FastaViewer import*  # NOQA: E402
+from LoadFasta_FastaViewer import LoadFasta_FastaViewer  # NOQA: E402
+from FilesNumberHandler import Files_Number_Handler
 
 
-class Window(QMainWindow):
+
+class GUI_FastaViewer(QMainWindow):
     """
     A class used to make and change the appearance of the FastaViewer.
     It enables to load a fasta file of a colletion of protein sequences
@@ -40,8 +42,6 @@ class Window(QMainWindow):
          Horizontal Layouts that hold different Widgets
     radioname,radioid,radioseq=QRadioButton
             A QRadioButton that appears on sceen an can be cheked
-    scroll : QScrollArea()
-            Makes an areo of the Window scrollable
     color : QColor
             Red Color for the searched seq
     colorblack : QColor
@@ -86,12 +86,12 @@ class Window(QMainWindow):
         nothing
         """
         super().__init__()
+        self.resize(1280, 720)
         self.path = ""
-        self.setFixedSize(635, 480)
         self.initUI()
 
     def initUI(self):
-        """Gets self and creates creates the User Interface
+        """Gets self and creates the User Interface
         Parameters
         ----------
         self : QMainWindow
@@ -99,15 +99,19 @@ class Window(QMainWindow):
         -------
         nothing
         """
-        # creating Buttons
 
+        # creating Buttons
         self.searchButtonP = QtWidgets.QPushButton(self)
-        self.searchButtonP.setText("search")
+        self.searchButtonP.setText("Search")
         self.searchButtonP.clicked.connect(self.searchClicked)
 
         self.loadbutton = QtWidgets.QPushButton(self)
-        self.loadbutton.setText("load")
-        self.loadbutton.clicked.connect(self.loadFile)
+        self.loadbutton.setText("Load")
+        self.loadbutton.clicked.connect(self.loadPath)
+
+        self.changeReversePattern = QtWidgets.QPushButton(self)
+        self.changeReversePattern.setText("Add Reverse Pattern")
+        self.changeReversePattern.clicked.connect(self.user_Dialog_ChangeReversePattern)
 
         # creating testboxes for the buttons
         self.boxPro = QLineEdit(self)
@@ -132,15 +136,16 @@ class Window(QMainWindow):
         self.set2 = QHBoxLayout()
         self.radioname = QRadioButton("Name")
         self.radioid = QRadioButton("ID")
-        self.radioseq = QRadioButton("sequence")
+        self.radioseq = QRadioButton("Sequence")
         self.radioname.setChecked(True)
-        self.decoycheck = QCheckBox("Decoy search", self)
+        self.decoycheck = QCheckBox("Decoy search", self) 
         self.datalabel = QLabel()
         self.datalabel.setText("Data not loaded")
         self.set2.addWidget(self.radioname)
         self.set2.addWidget(self.radioid)
         self.set2.addWidget(self.radioseq)
         self.set2.addWidget(self.decoycheck)
+        self.set2.addWidget(self.changeReversePattern)
         self.set2.addWidget(self.datalabel)
 
         # set 3 contains the table and the result box
@@ -152,13 +157,11 @@ class Window(QMainWindow):
         self.main_layout.addLayout(self.set2)
         self.main_layout.addLayout(self.set3)
 
-        # creating a scroll Area
-        self.scroll = QScrollArea()
-        self.scroll.setWidget(self.mainwidget)
-        self.scroll.setWidgetResizable(True)
         self.mainwidget.setLayout(self.main_layout)
         self.setCentralWidget(self.mainwidget)
         self.setWindowTitle('Protein Viewer')
+
+        self.extra_pattern = ''
 
         # defining some colors to marked searched sequences
         self.color = QColor(255, 0, 0)
@@ -206,8 +209,30 @@ class Window(QMainWindow):
         cut = oldstring.split(proteinseq)
         return cut
     # defining the function for load button to get path of database
+    def clearFastaViewer(self):
+        self.tw.clear()
 
-    def loadFile(self):
+    def loadPath(self):
+        self.filename = QFileDialog.getOpenFileName()
+        #saving the file path in the dictionary
+        Files_Number_Handler.Dictionary_Change_File("fasta", self.filename[0])
+        Files_Number_Handler.Dictionary_Change_Boolean("fasta")
+        self.loadFile(self.filename[0])
+
+
+    # creates a user dialog to change default reverse pattern 
+    def user_Dialog_ChangeReversePattern(self):
+        text, okPressed = QInputDialog.getText(self, "Add reverse pattern", "Add:", QLineEdit.Normal, "")
+        if okPressed and text != '':
+            self.extra_pattern = text
+    
+
+    def option_selected(self,button):
+        global Option_selected
+        Option_selected = button.text()
+
+
+    def loadFile(self, fasta_path):
         """Gets QMainWindow and opens a QFileDialog and loads path
     Parameters
     ----------
@@ -218,16 +243,15 @@ class Window(QMainWindow):
     nothing , it changes the QMainWindow so that the user can see that a file
     has been loaded
     """
-        self.filename = QFileDialog.getOpenFileName()
-        self.path = self.filename[0]
+        #self.filename = QFileDialog.getOpenFileName()
+        #self.path = path_array[0]
         self.fileloaded = 1
         # loading the lists before searching in order to make the search faster
-        self.dictKeyAccession, self.proteinList, self.proteinNameList, self.proteinOSList, self.dictKeyAccessionDECOY, self.proteinListDECOY, self.proteinNameListDECOY, self.proteinOSListDECOY = Logic_LoadFasta_FastaViewer.protein_dictionary(
-            self.path)
+        self.dictKeyAccession, self.proteinList, self.proteinNameList, self.proteinOSList, self.dictKeyAccessionDECOY, self.proteinListDECOY, self.proteinNameListDECOY, self.proteinOSListDECOY = LoadFasta_FastaViewer.protein_dictionary(
+            fasta_path, self.extra_pattern)
         self.datalabel.setText("Data loaded")
         for i in range(len(self.dictKeyAccession)):
             ID = list(self.dictKeyAccession.keys())[i]
-            Protein = self.proteinList[i]
             Proteinname = self.proteinNameList[i]
             OS = self.proteinOSList[i]
             self.cg = QtWidgets.QTreeWidgetItem(self.tw)
@@ -236,148 +260,152 @@ class Window(QMainWindow):
             self.cg.setData(2, 0, Proteinname)
         self.tw.itemClicked.connect(self.clickTreeItem)
 
-    # defining functions to display the protein sequence when TreeItem is clicked
+    # defining a function to creat TreeItems
+
+    def createTreeItem(self, item, ID, Protein):
+        """Gets a TreeItem and creats two child Items, a Qlabel and a QTextEdit.
+    Firs Child Item holds a QTextEdit with the given Protein sequence.
+    Second Cild Item holds a QLabel with a hyperlink to the database UniProt.
+    Parameters
+    ----------
+    self : QMainWindow
+        the MainWindow of the class
+    item : QTreeWidgetItem
+        for which the child items will be created
+    ID : The specific protein accesion
+        which is needed for the link to the database
+    Protein : The specific protein sequence
+        that will be displayed in the QTextEdit
+    Returns
+    -------
+    nothing , it changes the Treewidget
+    and creates two child items for the handed in tree item
+    """
+        self.link = QLabel()
+        self.link.setTextInteractionFlags(
+            Qt.LinksAccessibleByMouse)
+        self.link.setOpenExternalLinks(True)
+        self.link.setTextFormat(Qt.RichText)
+        self.link.setText("<a href =" + "https://www.uniprot.org/uniprot/" +
+                          ID + ">" + "More Information"+" </a>")
+        self.textp = QTextEdit()
+        self.textp.resize(
+            self.textp.width(), self.textp.height())
+        self.textp.insertPlainText(
+            "Proteinsequence: " + Protein + "\n")
+        self.textp.setReadOnly(True)
+        self.cgChild = QtWidgets.QTreeWidgetItem(
+            item)
+        self.cgChild2 = QtWidgets.QTreeWidgetItem(
+            item)
+        self.cgChild.setFirstColumnSpanned(True)
+        self.tw.setItemWidget(
+            self.cgChild, 0, self.textp)
+        self.tw.setItemWidget(
+            self.cgChild2, 0, self.link)
+
+    # methode when TreeItem was cklicked
 
     def clickTreeItem(self, item):
-        '''Gets the item of the tree widget that was itemClicked and
-        creates two new child items of the item. One child item displays the
-        protein sequence in a QTextEdit the second child item displays a link to the protein
-        database UniProt.
+        '''Gets a QTreeWidgetItem and its ID data of the first
+        collumn. The ID and the corresponding protein sequence are
+        handed to the createTreeItem method.
         Parameters
         ----------
-        self : QTreeWidget
-        item : QTreeWidgetItem
-            the specific item that was clicked
+        self : QMainWindow
+            the MainWindow of the class
+        item : clicked QTreeWidgetItem
+            from which the ID is obtained
         Returns
         -------
-        nothing , it creates two new child QTreeWidgetItems of the
-        clicked QTreeWidgetItem
+        nothing
         '''
         num = item.childCount()
-        # check nummer of child items to avoid adding new items for every click
+        # prevents multiple creation of the same child tree items
         if num == 0:
             ID = item.data(0, 0)
             index = list(self.dictKeyAccession.keys()).index(ID)
             Protein = self.proteinList[index]
-            self.link = QLabel()
-            self.link.setTextInteractionFlags(
-                Qt.LinksAccessibleByMouse)
-            self.link.setOpenExternalLinks(True)
-            self.link.setTextFormat(Qt.RichText)
-            self.link.setText("<a href =" + "https://www.uniprot.org/uniprot/" +
-                              ID + ">" + "More Information"+" </a>")
-            self.textp = QTextEdit()
-            self.textp.resize(
-                self.textp.width(), self.textp.height())
-            self.textp.insertPlainText(
-                "Proteinsequenz: " + Protein + "\n")
-            self.textp.setReadOnly(True)
-            self.cgChild = QtWidgets.QTreeWidgetItem(
-                item)
-            self.cgChild2 = QtWidgets.QTreeWidgetItem(
-                item)
-            self.cgChild.setFirstColumnSpanned(True)
-            self.tw.setItemWidget(
-                self.cgChild, 0, self.textp)
-            self.tw.setItemWidget(
-                self.cgChild2, 0, self.link)
-
-    # same function as clickTreeItem but searches proetein sequence in DECOY list
+            self.createTreeItem(item, ID, Protein)
 
     def clickTreeItemDecoy(self, item):
+        '''Does the same as clickTreeItem but
+        hands the corresponding DECOY protein sequence
+        to the create TreeItem method.
+        '''
         num = item.childCount()
         if num == 0:
             ID = item.data(0, 0)
             index = list(self.dictKeyAccessionDECOY).index(ID)
             Protein = self.proteinListDECOY[index]
-            self.link = QLabel()
-            self.link.setTextInteractionFlags(
-                Qt.LinksAccessibleByMouse)
-            self.link.setOpenExternalLinks(True)
-            self.link.setTextFormat(Qt.RichText)
-            self.link.setText("<a href =" + "https://www.uniprot.org/uniprot/" +
-                              ID + ">" + "More Information"+" </a>")
-            self.textp = QTextEdit()
-            self.textp.resize(
-                self.textp.width(), self.textp.height())
-            self.textp.insertPlainText(
-                "Proteinsequenz: " + Protein + "\n")
-            self.textp.setReadOnly(True)
-            self.cgChild = QtWidgets.QTreeWidgetItem(
-                item)
-            self.cgChild2 = QtWidgets.QTreeWidgetItem(
-                item)
-            self.cgChild.setFirstColumnSpanned(True)
-            self.tw.setItemWidget(
-                self.cgChild, 0, self.textp)
-            self.tw.setItemWidget(
-                self.cgChild2, 0, self.link)
+            self.createTreeItem(item, ID, Protein)
 
-    #function for displaying the protein sequence after subsequence search
-
-    def clickTreeItemSeqSearch(self, item):
-        '''Gets the item of the tree widget that was itemClicked and
-        creates two new child items of the item. One empty child item and
-        the second child item displays a link to the protein
-        database UniProt.
+    def createTreeItemSeqSearch(self, item, ID, Protein):
+        """Gets a TreeItem and creats two child Items and a Qlabel.
+        Firs Child Item holds a QTextEdit with the given Protein sequence.
+        Second Cild Item holds a QLabel with a hyperlink to the database UniProt.
         Parameters
         ----------
-        self : QTreeWidget
+        self : QMainWindow
+            the MainWindow of the class
         item : QTreeWidgetItem
-            the specific item that was clicked
+            for which the child items will be created
+        ID : The specific protein accesion
+            which is needed for the link to the database
+        Protein : A QTextEdit widget with the specific portein sequence
         Returns
         -------
-        nothing , it creates two new child QTreeWidgetItems of the
-        clicked QTreeWidgetItem
+        nothing , it changes the Treewidget
+        and creates two child items for the handed in tree item
+        """
+        self.link = QLabel()
+        self.link.setTextInteractionFlags(
+            Qt.LinksAccessibleByMouse)
+        self.link.setOpenExternalLinks(True)
+        self.link.setTextFormat(Qt.RichText)
+        self.link.setText("<a href =" + "https://www.uniprot.org/uniprot/" +
+                          ID + ">" + "More Information"+" </a>")
+
+        self.cgChild = QtWidgets.QTreeWidgetItem(
+            item)
+        self.cgChild2 = QtWidgets.QTreeWidgetItem(
+            item)
+        self.cgChild.setFirstColumnSpanned(True)
+        self.tw.setItemWidget(
+            self.cgChild, 0, Protein)
+        self.tw.setItemWidget(
+            self.cgChild2, 0, self.link)
+
+    def clickTreeItemSeqSearch(self, item):
+        '''Gets a QTreeWidgetItem and its ID data of the first
+        collumn. The ID and the corresponding QTextEdit widget with the
+        protein sequence are handed to the createTreeItem method.
+        Parameters
+        ----------
+        self : QMainWindow
+            the MainWindow of the class
+        item : clicked QTreeWidgetItem
+            from which the ID is obtained
+        Returns
+        -------
+        nothing
         '''
         num = item.childCount()
         if num == 0:
             ID = item.data(0, 0)
-            ProtSeq = self.SequencSearchDict.get(ID)
-            print(ProtSeq)
-            self.link = QLabel()
-            self.link.setTextInteractionFlags(
-                Qt.LinksAccessibleByMouse)
-            self.link.setOpenExternalLinks(True)
-            self.link.setTextFormat(Qt.RichText)
-            self.link.setText("<a href =" + "https://www.uniprot.org/uniprot/" +
-                              ID + ">" + "More Information"+" </a>")
-
-            self.cgChild = QtWidgets.QTreeWidgetItem(
-                item)
-            self.cgChild2 = QtWidgets.QTreeWidgetItem(
-                item)
-            self.cgChild.setFirstColumnSpanned(True)
-            self.tw.setItemWidget(
-                self.cgChild, 0, ProtSeq)
-            self.tw.setItemWidget(
-                self.cgChild2, 0, self.link)
-
-    # same function as clickTreeItemSeqSearch but searches proetein sequence in DECOY list
+            Protein = self.SequencSearchDict.get(ID)
+            self.createTreeItemSeqSearch(item, ID, Protein)
 
     def clickTreeItemSeqSearchDecoy(self, item):
+        '''Does the same as clickTreeItemSeqSearch but
+        hands the corresponding DECOY protein sequence
+        to the create TreeItem method.
+        '''
         num = item.childCount()
         if num == 0:
             ID = item.data(0, 0)
-            index = list(self.dictKeyAccessionDECOY.keys()).index(ID)
-            Protein = self.proteinListDECOY[index]
-            self.link = QLabel()
-            self.link.setTextInteractionFlags(
-                Qt.LinksAccessibleByMouse)
-            self.link.setOpenExternalLinks(True)
-            self.link.setTextFormat(Qt.RichText)
-            self.link.setText("<a href =" + "https://www.uniprot.org/uniprot/" +
-                              ID + ">" + "More Information"+" </a>")
-
-            self.cgChild = QtWidgets.QTreeWidgetItem(
-                item)
-            self.cgChild2 = QtWidgets.QTreeWidgetItem(
-                item)
-            self.cgChild.setFirstColumnSpanned(True)
-            self.tw.setItemWidget(
-                self.cgChild, 0, Protein)
-            self.tw.setItemWidget(
-                self.cgChild2, 0, self.link)
+            Protein = self.SequencSearchDictDECOY.get(ID)
+            self.createTreeItemSeqSearch(item, ID, Protein)
 
     # defining the searchClicked method for the searchButtonP
 
@@ -438,8 +466,6 @@ class Window(QMainWindow):
                     atLeastOneProteinFound = True
                     index = list(self.dictKeyAccessionDECOY).index(
                         protein_accession)
-                    Protein = self.dictKeyAccessionDECOY.get(
-                        protein_accession)
                     ID = list(self.dictKeyAccessionDECOY.keys())[
                         index]
                     Proteinname = self.proteinNameListDECOY[index]
@@ -463,7 +489,6 @@ class Window(QMainWindow):
                     index = list(self.dictKeyAccession).index(
                         protein_accession)
                     ID = list(self.dictKeyAccession.keys())[index]
-                    Protein = self.proteinList[index]
                     Proteinname = self.proteinNameList[index]
                     OS = self.proteinOSList[index]
                     self.dummy = ID
@@ -529,7 +554,7 @@ class Window(QMainWindow):
                     cuts = self.cutstring(
                         Protein, protein_sub_sequence)
                     self.textp.insertPlainText(
-                        "Proteinsequenz: "
+                        "Proteinsequence: "
                     )
 
                     for i in range(len(cuts)):
@@ -591,7 +616,7 @@ class Window(QMainWindow):
                     cuts = self.cutstring(
                         Protein, protein_sub_sequence)
                     self.textp.insertPlainText(
-                        "Proteinsequenz: "
+                        "Proteinsequence: "
                     )
 
                     for i in range(len(cuts)):
@@ -660,7 +685,6 @@ class Window(QMainWindow):
                         protein_name)
                     ID = list(self.dictKeyAccessionDECOY.keys())[
                         index]
-                    Protein = self.proteinListDECOY[index]
                     Proteinname = protein_name
                     OS = self.proteinOSListDECOY[index]
 
@@ -683,7 +707,6 @@ class Window(QMainWindow):
                     index = self.proteinNameList.index(
                         protein_name)
                     ID = list(self.dictKeyAccession.keys())[index]
-                    Protein = self.proteinList[index]
                     Proteinname = self.proteinNameList[index]
                     OS = self.proteinOSList[index]
 
@@ -718,10 +741,10 @@ def main():
     nothing
     """
     app = QApplication(sys.argv)
-    ex = Window()
+    ex = GUI_FastaViewer()
     sys.exit(app.exec_())
-"""
 
+"""
 if __name__ == '__main__':
     main()
 """

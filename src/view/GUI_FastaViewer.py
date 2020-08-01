@@ -244,7 +244,7 @@ class GUI_FastaViewer(QMainWindow):
     has been loaded
     """
         #self.filename = QFileDialog.getOpenFileName()
-        #self.path = path_array[0]
+        self.path = fasta_path
         self.fileloaded = 1
         # loading the lists before searching in order to make the search faster
         self.dictKeyAccession, self.proteinList, self.proteinNameList, self.proteinOSList, self.dictKeyAccessionDECOY, self.proteinListDECOY, self.proteinNameListDECOY, self.proteinOSListDECOY = LoadFasta_FastaViewer.protein_dictionary(

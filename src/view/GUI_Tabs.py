@@ -218,8 +218,11 @@ class MyTableWidget(QWidget):
         elif self.tab3.path != "":
             self.loadedTsv = self.tab3.path
 
-        #if self.loadedIni == "":
-        #    self.PopupIni()
+        if self.loadedIni == "":
+            self.PopupIni()
+
+        elif self.tab2.path != "":
+            self.loadedIni = self.tab2.path
 
         os.chdir(self.loadedFolder)
         mzML = glob.glob("*.mzML")

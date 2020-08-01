@@ -13,6 +13,8 @@ class ConfigView(QWidget):
     def __init__(self, *args):
         QWidget.__init__(self, *args)
 
+        self.path = ""
+
         self.tree = ET.ElementTree
         self.header = ['Name', 'Value', 'Type', 'Restrictions']
         self.NAMECOL = 0
@@ -38,7 +40,7 @@ class ConfigView(QWidget):
         loadbtn.setMaximumWidth(80)
         savebtn = QPushButton('Save')
         savebtn.setMaximumWidth(80)
-        loadbtn.clicked.connect(self.openXML)
+        loadbtn.clicked.connect(self.loadFile)
         savebtn.clicked.connect(self.saveFile)
 
         self.checkbox = QCheckBox('Show advanced parameters')
@@ -62,6 +64,14 @@ class ConfigView(QWidget):
 
         self.setLayout(layout)
         self.resize(500, 720)
+
+    def loadFile(self):
+        file, _ = QFileDialog.getOpenFileName(
+            self, "QFileDialog.getOpenFileName()", "",
+            "All Files (*);;ini (*.ini)")
+
+        self.path = file
+        self.openXML(self.path)
 
     def openXML(self, path):
         """

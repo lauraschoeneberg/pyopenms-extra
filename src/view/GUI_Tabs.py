@@ -42,9 +42,8 @@ class AppGUITabs(QMainWindow):
 
 class MyTableWidget(QWidget):
     """
-    A class used to make and change the appearance of the FastaViewer.
-    It enables to load a fasta file of a colletion of protein sequences
-    and search for proteins by its accesion number, name or subsequence.
+    Shows differnt widgets to evaluate experiment data, let's user load data and run a proteomicsLFQ command on given
+    data. Files can be chosen manually or loaded automatically from al chosen project folder.
     ...
     Attributes
     ----------

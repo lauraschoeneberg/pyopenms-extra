@@ -129,11 +129,8 @@ class MyTableWidget(QWidget):
 
             for file in glob.glob("*.tsv"):
                 self.loadedTsv = file
-                TableDataFrame.setTable(self.tab3, FileHandler.importTable(self.tab3, file))
-                self.tab3.drawTable()
-
-            if self.loadedTsv == "":
                 self.tab3.loadDir(self.loadedFolder)
+
 
     def PopupFolder(self):
         msg = QMessageBox()
@@ -178,11 +175,8 @@ class MyTableWidget(QWidget):
         fileDialog = QFileDialog.getOpenFileName(self, "Choose .tsv","",".tsv files (*.tsv)",
                                                  ".tsv files (*.tsv)")
         fileName = fileDialog[0]
-        TableDataFrame.setTable(self.tab3, FileHandler.importTable(self.tab3, fileName))
-        print(FileHandler.importTable(self.tab3, fileName))
-        self.tab3.drawTable()
-
         self.loadedTsv = fileName[0]
+        self.tab3.loadFile(fileName)
 
     def PopupIni(self):
         msg = QMessageBox()

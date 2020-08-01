@@ -42,7 +42,7 @@ class AppGUITabs(QMainWindow):
 
 class MyTableWidget(QWidget):
     """
-    Shows differnt widgets to evaluate experiment data, let's user load data and run a proteomicsLFQ command on given
+    Shows different widgets to evaluate experiment data, let's user load data and run a proteomicsLFQ command on given
     data. Files can be chosen manually or loaded automatically from al chosen project folder.
     ...
     Attributes
@@ -58,7 +58,7 @@ class MyTableWidget(QWidget):
     self.tabs :
         main widget containing all the tabs
     self.tab1 :
-        first tab containig the HomeTabWidget
+        first tab containing the HomeTabWidget
     self.tab2 :
         second tab containing the ConfigView widget
     self.tab3 :
@@ -68,7 +68,7 @@ class MyTableWidget(QWidget):
     self.tab5 :
         fifth tab containing the mzTabTableWidget
     self.tab6 :
-        sixh tab containing the SpecViewer widget
+        sixth tab containing the SpecViewer widget
     Methods
     -------
     _init_(self)
@@ -95,8 +95,6 @@ class MyTableWidget(QWidget):
         let's user pick or creates .ini file
     LFQ(self)
         asks the user to load missing files and runs LFQ command
-    main()
-            runs the QApplication
     """
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
@@ -373,7 +371,6 @@ class MyTableWidget(QWidget):
                 self.tab4.readFile(file)
 
             os.remove("tmp.ini")
-
 
 
 if __name__ == '__main__':

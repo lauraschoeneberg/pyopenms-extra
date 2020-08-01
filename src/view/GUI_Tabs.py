@@ -88,9 +88,11 @@ class MyTableWidget(QWidget):
         self.setLayout(self.layout)
 
     def show_popup(self):
-        """
-            displays popup window that questions whether data should be loaded automatically
-        """
+        '''Shows a popup asking you if you want to load all data automatically by choosing a folder
+            containing all the needed files.
+        -------
+        nothing
+        '''
         msg = QMessageBox()
         msg.setWindowTitle("Attention!")
         msg.setText("Want data to be loaded automatically?  ")
@@ -103,10 +105,15 @@ class MyTableWidget(QWidget):
         x = msg.exec_()
 
     def popupbutton_clicked(self, i):
-        """
-            when user selects 'Yes', data is loaded into the widgets based on its file type
-        """
-        
+        '''If you choose to load data automatically asks you to choose a folder which contains the needed data
+            and then loads and shows fasta, tsv and ini. If no ini is found one is created.
+        Parameters
+        ----------
+        i : Information about clicked Button
+        Returns
+        -------
+        nothing
+        '''
         if i.text() == "&Yes":
             self.AutoLoadedData = True #neu
             dialog = QFileDialog(self)
@@ -133,6 +140,11 @@ class MyTableWidget(QWidget):
 
 
     def PopupFolder(self):
+        '''Shows a popup asking you to choose a project folde, which must be the folder containing
+            the mzML and idXML files.
+        -------
+        nothing
+        '''
         msg = QMessageBox()
         msg.setWindowTitle("Attention!")
         msg.setText("Please choose a Project Folder \n(must be the one containing the mzML and idXML files)")
@@ -142,10 +154,19 @@ class MyTableWidget(QWidget):
         x = msg.exec_()
 
     def loadFolder(self):
+        '''Opens a file Dialog in which you can choose your project folder.
+        Returns
+        -------
+        nothing
+        '''
         dialog = QFileDialog(self)
         self.loadedFolder = dialog.getExistingDirectory()
 
     def PopupFasta(self):
+        '''Shows a popup asking you to choose a .fasta file.
+        -------
+        nothing
+        '''
         msg = QMessageBox()
         msg.setWindowTitle("Attention!")
         msg.setText("Please choose a Fasta file")
@@ -156,6 +177,12 @@ class MyTableWidget(QWidget):
 
 
     def loadFasta(self):
+        '''Opens a file Dialog in which you can choose your .fasta file, when file is chosen it's shown in the
+            Fasta-Viewer tab.
+        Returns
+        -------
+        nothing
+        '''
         fileDialog = QFileDialog.getOpenFileName(self, "Choose Fasta","","Fasta files (*.fasta)",
                                                  "Fasta files (*.fasta)")
         fileName = fileDialog[0]
@@ -163,6 +190,10 @@ class MyTableWidget(QWidget):
         self.loadedFasta = fileName
 
     def PopupTsv(self):
+        '''Shows a popup asking you to choose a .tsv file.
+        -------
+        nothing
+        '''
         msg = QMessageBox()
         msg.setWindowTitle("Attention!")
         msg.setText("Please choose a .tsv")
@@ -172,6 +203,12 @@ class MyTableWidget(QWidget):
         x = msg.exec_()
 
     def loadTsv(self):
+        '''Opens a file Dialog in which you can choose your .tsv file, when file is chosen the respective
+            mzML and idXML files from the project folder are shown in the Experimental Design tab
+        Returns
+        -------
+        nothing
+        '''
         fileDialog = QFileDialog.getOpenFileName(self, "Choose .tsv","",".tsv files (*.tsv)",
                                                  ".tsv files (*.tsv)")
         fileName = fileDialog[0]
@@ -179,6 +216,10 @@ class MyTableWidget(QWidget):
         self.tab3.loadDir(self.loadedFolder)
 
     def PopupIni(self):
+        '''Shows a popup asking you to choose a .ini file.
+        -------
+        nothing
+        '''
         msg = QMessageBox()
         msg.setWindowTitle("Attention!")
         msg.setText("Do you want to choose a .ini ? \nIf you choose cancel a .ini will be automatically generated")
@@ -188,6 +229,15 @@ class MyTableWidget(QWidget):
         x = msg.exec_()
 
     def loadIni(self, i):
+        '''If you choose to load a .ini a file dialog opens and you can choose it and it will be shown in
+            the Ini-Config tab. If you don't want to load a .ini one is created and shown automatically.
+        Parameters
+        ----------
+        i : Information about clicked Button
+        Returns
+        -------
+        nothing
+        '''
         if i.text() == "&Yes":
             fileDialog = QFileDialog.getOpenFileName(self, "Choose .ini","",".ini files (*.ini)",
                                                  ".ini files (*.ini)")
@@ -203,6 +253,13 @@ class MyTableWidget(QWidget):
             self.loadedIni = "generated.ini"
 
     def LFQ(self):
+        '''Checks if all needed files are loaded. If more files are needed popups are shown to guide the user
+            through loading the additional files. Takes all the loaded files and runs the LFQ command and presents
+            the created .mzTab file in the PSM/PRT Table tab.
+        Returns
+        -------
+        nothing
+        '''
         if self.loadedFolder == "":
             self.PopupFolder()
 

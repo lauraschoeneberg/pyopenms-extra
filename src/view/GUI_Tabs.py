@@ -41,6 +41,64 @@ class AppGUITabs(QMainWindow):
 
 
 class MyTableWidget(QWidget):
+    """
+    A class used to make and change the appearance of the FastaViewer.
+    It enables to load a fasta file of a colletion of protein sequences
+    and search for proteins by its accesion number, name or subsequence.
+    ...
+    Attributes
+    ----------
+    loadedFolder :
+        path to project folder
+    loadedFasta :
+        path to loaded .fasta file
+    loadedIni:
+        path to loaded .ini file
+    loadedTsv:
+        path to loaded .tsv file
+    self.tabs :
+        main widget containing all the tabs
+    self.tab1 :
+        first tab containig the HomeTabWidget
+    self.tab2 :
+        second tab containing the ConfigView widget
+    elf.tab3 :
+        third tab containing the mzMLTableView widget
+    self.tab4 :
+        fourth tab containing the FastaViewer widget
+    self.tab5 :
+        fifth tab containing the mzTabTableWidget
+    self.tab6 :
+        sixh tab containing the SpecViewer widget
+    Methods
+    -------
+    _init_(self)
+        Sets Window size na exc. initUI()
+    show_popup(self)
+        asks user to pick a folder from which files should be loaded automatically
+    popupbutton_clicked(self, i)
+        let's user pick a folder and loads all data in given folder
+    PopupFolder(self)
+        asks user to pick a project folder
+    loadFolder(self)
+        let's user pick a project folder
+    PopupFasta(self)
+        asks user to load .fasta file if missing
+    loadFasta(self)
+        let's user pick and loads a .fasta file
+    PopupTsv(self)
+        asks user to load .tsv file if missing
+    loadTsv(self)
+        let's user pick and loads a .tsv file
+    PopupIni(self)
+        asks user to load .ini file if missing
+    loadIni(self, i)
+        let's user pick or creates .ini file
+    LFQ(self)
+        asks the user to load missing files and runs LFQ command
+    main()
+            runs the QApplication
+    """
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
         self.layout = QVBoxLayout(self)

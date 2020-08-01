@@ -2,7 +2,7 @@ import sys
 import webbrowser
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QTableWidget, QVBoxLayout, QTableWidgetItem, QPushButton, QFileDialog
-from mzTabTableWidget import Window as mz
+from mzTabTableWidget import mzTabTableWidget as mz
 
 class Window(QWidget):
     def __init__(self):
@@ -43,6 +43,6 @@ class Window(QWidget):
 """
 if __name__== '__main__':
     app = QApplication(sys.argv)
-    ex = Window()
+    ex = mzTabTableWidget()
     sys.exit(app.exec_())
 """

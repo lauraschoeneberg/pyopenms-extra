@@ -16,7 +16,7 @@ from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QTableWidget, QVBoxLayout, QTableWidgetItem, QPushButton, QFileDialog
 
 
-class Window(QWidget):
+class mzTabTableWidget(QWidget):
     def __init__(self):
         super().__init__()
 

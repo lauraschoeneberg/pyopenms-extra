@@ -3,10 +3,8 @@ mzTabTableWidget
 ----------------
 This script allows the user to transfer information about proteins and psms from a mzTab file into two tables, 
 one containing the proteins, the other one containing the psms.
-
 By clicking on a row, the tables get updated regarding their listed proteins or psms.
 Once you choose a protein/psm, the table displays only those psms/proteins that are linked to one another.
-
 This tool is designed to accept mzTab files. It is required to save those files under '.../examples/data/' or 
 change the path within the InitWindow.
 """
@@ -17,7 +15,112 @@ from PyQt5.QtWidgets import QApplication, QWidget, QTableWidget, QVBoxLayout, QT
 
 
 class mzTabTableWidget(QWidget):
+    """
+        class to create mzTabTableWidget to display two tables containing data of mzTab file
+        ...
+        Attributes
+        ----------
+        title : string
+            title of widget
+
+        top, left, width, height : int
+            attributes regarding size of widget
+
+        fileLoaded : boolean
+            boolean that describes if file is loaded
+
+        PSMFull : list of lists
+            list containing all rows of full psm table
+
+        PRTFull : list of lists
+            list containing all rows of fill prt table
+
+        PRTFiltered: list of lists
+            list containing all rows of filtered prt table
+
+        PSMFiltered: list of lists
+            list containing all rows of filtered psm table
+
+        PRTColumn : list of booleans
+            list of booleans that describe whether prt column is shown or hidden
+
+        PSMColumn : list of booleans
+            list of booleans that describe whether psm column is shown or hidden
+
+        tablePRTFull : QTableWidget
+            table widget that includes full prt table
+
+        tablePSMFull : QTableWidget
+            table widget that includes full psm table
+
+        tablePRTFiltered : QTableWidget
+            table widget that includes filtered prt table
+
+        tablePSMFiltered: QTableWidget
+            table widget that includes filtered psm table
+
+        vBoxPRT : QVBoxLayout
+            layout for PRT table
+
+        vBoxPSM : QVBoxLayout
+            layout for PSM table
+
+        outerVBox : QVBoxLayout
+            main layout for widget
+
+        Methods
+        -------
+        __init__(self)
+            defines window size and title and attributes for PRT and PSM tables
+
+        InitWindow(self)
+            creates window, manages click events and adds widgets to layout
+
+        readFile(self, file)
+            loads new file into tables
+
+        parser(self, file)
+            parses mzTab file and saves PRT and PSM information
+
+        initTables(self)
+            draws prt and psm tables with headers
+
+        createTable(self, table, content)
+            fills tables with content
+
+        hidePRTColumns(self)
+            hides constant prt columns
+
+        hidePSMColumns(self)
+            hides constant psm columns
+
+        PRTClicked(self, item)
+            sets relevantContent of prt table and decides whether to use filter
+
+        PSMClicked(self, item)
+            sets relevantContent of psm table and decides whether to use filter
+
+        filterPRT(self, accession)
+            filters prt table
+
+        filterPSM(self, accession)
+            filters psm table
+
+        unfilterPRT(self)
+            deactivates filter of prt table
+
+        unfilterPSM(self)
+            deactivates filter of psm table
+
+        browsePRT(sef, item)
+            opens uniport website when prt table item is double clicked
+
+        browsePSM(self, item)
+            opens uniport website when psm table item is double clicked
+            
+        """
     def __init__(self):
+
         super().__init__()
 
         self.title = "mzTabTableWidget"
@@ -55,15 +158,21 @@ class mzTabTableWidget(QWidget):
         self.InitWindow()
 
     def InitWindow(self):
+        """
+        class to initiate window and its layout and define table parameters
+
+        """
         self.setWindowIcon(QtGui.QIcon("icon.png"))
         self.setWindowTitle(self.title)
         self.setGeometry(self.top, self.left, self.width, self.height)
 
+        # hide tables for now
         self.tablePRTFull.setHidden(True)
         self.tablePSMFull.setHidden(True)
         self.tablePRTFiltered.setHidden(True)
         self.tablePSMFiltered.setHidden(True)
 
+        # connect click events to functions that update tables
         self.tablePRTFull.itemClicked.connect(self.PRTClicked)
         self.tablePRTFiltered.itemClicked.connect(self.PRTClicked)
         self.tablePSMFull.itemClicked.connect(self.PSMClicked)
@@ -74,6 +183,7 @@ class mzTabTableWidget(QWidget):
         self.tablePSMFull.itemDoubleClicked.connect(self.browsePSM)
         self.tablePSMFiltered.itemDoubleClicked.connect(self.browsePSM)
 
+        #add tables to layout
         self.vBoxPRT.addWidget(self.tablePRTFull)
         self.vBoxPRT.addWidget(self.tablePRTFiltered)
 
@@ -87,7 +197,12 @@ class mzTabTableWidget(QWidget):
         self.show()
 
     def readFile(self, file):
+        """
+        class to load new file into tables
+        
+        """
         if self.fileLoaded:
+            # clear table content for now
             self.tablePRTFull.clear()
             self.tablePSMFull.clear()
             self.tablePSMFiltered.clear()
@@ -110,18 +225,23 @@ class mzTabTableWidget(QWidget):
             self.PRTColumn = [True]
             self.PSMColumn = [True]
 
+        # parse file
         self.parser(file)
 
+        # save column length in PRTColumn and PSMColumn
         self.PRTColumn *= len(self.PRTFull[1])
         self.PSMColumn *= len(self.PSMFull[1])
 
+        # create full tables
         self.initTables()
         self.createTable(self.tablePRTFull, self.PRTFull)
         self.createTable(self.tablePSMFull, self.PSMFull)
 
+        # hide columns that are empty or have the same content in each line
         self.hidePRTColumns()
         self.hidePSMColumns()
 
+        # show full tables for now
         self.tablePRTFull.setHidden(False)
         self.tablePSMFull.setHidden(False)
 
@@ -145,6 +265,7 @@ class mzTabTableWidget(QWidget):
                 elif line.startswith("PSH") or line.startswith("PSM"):
                     self.PSMFull.append(line.strip().split('\t'))
 
+        # delete first row of each table
         for item in self.PRTFull:
             item.pop(0)
 
@@ -241,7 +362,13 @@ class mzTabTableWidget(QWidget):
             k += 1
 
     def PRTClicked(self, item):
-
+        """ sets relevantContent of prt table and decides whether to use filter or not
+            ...
+            Parameters
+            ----------
+            item : QTableWidgetItem
+                clicked table widget item
+        """
         if self.tablePRTFull.isHidden():
             relevantContent = self.PRTFiltered
         else:
@@ -255,7 +382,13 @@ class mzTabTableWidget(QWidget):
             self.filterPSM(accession)
 
     def PSMClicked(self, item):
-
+        """ sets relevantContent of psm table and decides whether to use filter or not
+            ...
+            Parameters
+            ----------
+            item : QTableWidgetItem
+                clicked table widget item
+        """
         if self.tablePSMFull.isHidden():
             relevantContent = self.PSMFiltered
         else:
@@ -269,6 +402,13 @@ class mzTabTableWidget(QWidget):
             self.filterPRT(accession)
 
     def filterPRT(self, accession):
+        """ filters prt table
+        ...
+        Parameters
+        ----------
+        accession : string
+            contains data of accession column of clicked row and therewith information about connected psms 
+        """
         self.tablePRTFiltered.setHidden(False)
         self.tablePRTFull.setHidden(True)
 
@@ -278,6 +418,13 @@ class mzTabTableWidget(QWidget):
         self.createTable(self.tablePRTFiltered, self.PRTFiltered)
 
     def filterPSM(self, accession):
+        """ filters psm table
+        ...
+        Parameters
+        ----------
+        accession : string
+            contains data of accession column of clicked row and therewith information about connected prts 
+        """
         self.tablePSMFiltered.setHidden(False)
         self.tablePSMFull.setHidden(True)
 
@@ -287,18 +434,21 @@ class mzTabTableWidget(QWidget):
         self.createTable(self.tablePSMFiltered, self.PSMFiltered)
 
     def unfilterPRT(self):
+        """ deactivates filter of prt table"""
         self.tablePRTFiltered.setHidden(True)
         self.tablePRTFull.setHidden(False)
         self.selectedPRT = ""
         self.PRTFiltered = []
 
     def unfilterPSM(self):
+        """ deactivates filter of psm table"""
         self.tablePSMFiltered.setHidden(True)
         self.tablePSMFull.setHidden(False)
         self.selectedPSM = ""
         self.PSMFiltered = []
 
     def browsePRT(self, item):
+        """opens uniprot website when prt table item is double clicked """
         if self.tablePRTFull.isHidden():
             accession = self.PRTFiltered[item.row()][0].split("|", 2)[1]
         else:
@@ -307,10 +457,10 @@ class mzTabTableWidget(QWidget):
         webbrowser.open("https://www.uniprot.org/uniprot/" + accession)
 
     def browsePSM(self, item):
+        """opens uniport website when psm table item is double clicked """
         if self.tablePSMFull.isHidden():
             accession = self.PSMFiltered[item.row()][2].split("|", 2)[1]
         else:
             accession = self.PSMFull[item.row()][2].split("|", 2)[1]
 
         webbrowser.open("https://www.uniprot.org/uniprot/" + accession)
-

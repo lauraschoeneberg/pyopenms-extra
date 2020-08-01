@@ -175,7 +175,7 @@ class MyTableWidget(QWidget):
         fileDialog = QFileDialog.getOpenFileName(self, "Choose .tsv","",".tsv files (*.tsv)",
                                                  ".tsv files (*.tsv)")
         fileName = fileDialog[0]
-        self.loadedTsv = fileName[0]
+        self.loadedTsv = fileName
         self.tab3.loadFile(fileName)
 
     def PopupIni(self):
@@ -218,7 +218,7 @@ class MyTableWidget(QWidget):
         elif self.tab3.path != "":
             self.loadedTsv = self.tab3.path
 
-        if self.loadedIni == "":
+        if self.loadedIni == "" and self.tab2.path == "":
             self.PopupIni()
 
         elif self.tab2.path != "":

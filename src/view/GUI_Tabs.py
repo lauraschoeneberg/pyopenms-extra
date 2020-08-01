@@ -176,7 +176,7 @@ class MyTableWidget(QWidget):
                                                  ".tsv files (*.tsv)")
         fileName = fileDialog[0]
         self.loadedTsv = fileName
-        self.tab3.loadFile(fileName)
+        self.tab3.loadDir(self.loadedFolder)
 
     def PopupIni(self):
         msg = QMessageBox()

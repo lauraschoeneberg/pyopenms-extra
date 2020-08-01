@@ -42,8 +42,8 @@ class AppGUITabs(QMainWindow):
 
 class MyTableWidget(QWidget):
     """
-    Shows different widgets to evaluate experiment data, let's user load data and run a proteomicsLFQ command on given
-    data. Files can be chosen manually or loaded automatically from al chosen project folder.
+    Shows different widgets to evaluate experiment data, lets user load data and run a proteomicsLFQ command on given
+    data. Files can be chosen manually or loaded automatically from a chosen project folder.
     ...
     Attributes
     ----------
@@ -80,23 +80,23 @@ class MyTableWidget(QWidget):
     show_popup(self)
         asks user to pick a folder from which files should be loaded automatically
     popupbutton_clicked(self, i)
-        let's user pick a folder and loads all data in given folder
+        lets user pick a folder and loads all data in given folder
     PopupFolder(self)
         asks user to pick a project folder
     loadFolder(self)
-        let's user pick a project folder
+        lets user pick a project folder
     PopupFasta(self)
         asks user to load .fasta file if missing
     loadFasta(self)
-        let's user pick and loads a .fasta file
+        lets user pick and loads a .fasta file
     PopupTsv(self)
         asks user to load .tsv file if missing
     loadTsv(self)
-        let's user pick and loads a .tsv file
+        lets user pick and loads a .tsv file
     PopupIni(self)
         asks user to load .ini file if missing
     loadIni(self, i)
-        let's user pick or creates .ini file
+        lets user pick or automatically creates .ini file
     LFQ(self)
         asks the user to load missing files and runs LFQ command
     """
@@ -199,8 +199,9 @@ class MyTableWidget(QWidget):
 
 
     def PopupFolder(self):
-        '''Shows a popup asking you to choose a project folde, which must be the folder containing
+        '''Shows a popup asking you to choose a project folder, which must be the folder containing
             the mzML and idXML files.
+        Returns
         -------
         nothing
         '''
@@ -223,6 +224,7 @@ class MyTableWidget(QWidget):
 
     def PopupFasta(self):
         '''Shows a popup asking you to choose a .fasta file.
+        Returns
         -------
         nothing
         '''
@@ -250,6 +252,7 @@ class MyTableWidget(QWidget):
 
     def PopupTsv(self):
         '''Shows a popup asking you to choose a .tsv file.
+        Returns
         -------
         nothing
         '''
@@ -276,6 +279,7 @@ class MyTableWidget(QWidget):
 
     def PopupIni(self):
         '''Shows a popup asking you to choose a .ini file.
+        Returns
         -------
         nothing
         '''

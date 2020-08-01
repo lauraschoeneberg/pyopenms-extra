@@ -30,7 +30,7 @@ class HomeTabWidget(QMainWindow):
         self.textwidget = QWidget(self)
         self.vertical = QVBoxLayout(self.textwidget)
         #set margins
-        self.vertical.setContentsMargins(5, 15, 1100, 15)
+        self.vertical.setContentsMargins(5, 15, 100, 15)
 
         #set labels
         self.HomeTitle = QLabel()

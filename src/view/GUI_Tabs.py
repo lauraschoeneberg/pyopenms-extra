@@ -127,17 +127,10 @@ class MyTableWidget(QWidget):
                 self.tab2.openXML("generated.ini")
                 self.loadedIni = "generated.ini"
 
-            if self.loadedIni == "":
-                os.system("ProteomicsLFQ -write_ini example.ini")
-                self.tab2.generateTreeWidgetItem("example.ini")
-                self.loadedIni = "example.ini"
-
             for file in glob.glob("*.tsv"):
                 self.loadedTsv = file
                 TableDataFrame.setTable(self.tab3, FileHandler.importTable(self.tab3, file))
                 self.tab3.drawTable()
-
-            print(self.loadedTsv)
 
             if self.loadedTsv == "":
                 self.tab3.loadDir(self.loadedFolder)
@@ -191,12 +184,49 @@ class MyTableWidget(QWidget):
 
         self.loadedTsv = fileName[0]
 
+    def PopupIni(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Attention!")
+        msg.setText("Do you want to choose a .ini ?")
+        msg.setStandardButtons(QMessageBox.Yes|QMessageBox.Cancel)
+        msg.buttonClicked.connect(self.loadIni)
+
+        x = msg.exec_()
+
+    def loadIni(self, i):
+        if i.text() == "&Yes":
+            fileDialog = QFileDialog.getOpenFileName(self, "Choose .ini","",".ini files (*.ini)",
+                                                 ".ini files (*.ini)")
+            fileName = fileDialog[0]
+
+            self.tab2.generateTreeWidgetItem(fileName)
+            self.loadedIni = fileName
+
+        else:
+            os.chdir(self.loadedFolder)
+            os.system("ProteomicsLFQ -write_ini generated.ini")
+            self.tab2.openXML("generated.ini")
+            self.loadedIni = "generated.ini"
+
     def LFQ(self):
-        if not self.AutoLoadedData:
-            """self.loadedTsv = 
-            self.loadedFasta = 
-            self.loadedIni = """
-            
+        if self.loadedFolder == "":
+            self.PopupFolder()
+
+        if self.loadedFasta == "" and self.tab5.path == "":
+            self.PopupFasta()
+
+        elif self.tab5.path != "":
+            self.loadedFasta = self.tab5.path
+
+        if self.loadedTsv == "" and self.tab3.path == "":
+            self.PopupTsv()
+
+        elif self.tab3.path != "":
+            self.loadedTsv = self.tab3.path
+
+        if self.loadedIni == "":
+            self.PopupIni()
+
         os.chdir(self.loadedFolder)
         mzML = glob.glob("*.mzML")
         idXML = glob.glob("*.idXML")
@@ -217,50 +247,7 @@ class MyTableWidget(QWidget):
 
             command += "-design " + self.loadedTsv + " "
             command += "-fasta " + self.loadedFasta + " "
-            command += "-ini tmp.ini" \
-                       "-out_cxml BSA.consensusXML.tmp " \
-                       "-out_msstats BSA.csv.tmp " \
-                       "-out BSA.mzTab.tmp " \
-                       "-threads " + self.tab1.loadedThreads + " " \
-                       "-proteinFDR" + self.tab1.loadedFDR + " "
-
-        if self.loadedFolder == "":
-            self.PopupFolder()
-
-        if self.loadedFasta == "" and self.tab5.path == "":
-            self.PopupFasta()
-
-        else:
-              self.loadedFasta = self.tab5.path
-
-        if self.loadedTsv == "" and self.tab3.path == "":
-             self.PopupTsv()
-
-        else:
-            self.loadedTsv = self.tab3.path
-
-        os.chdir(self.loadedFolder)
-        mzML = sorted(glob.glob("*.mzML"))
-        idXML = sorted(glob.glob("*.idXML"))
-
-        if len(mzML) == len(idXML):
-
-            command = "ProteomicsLFQ -in "
-
-            for file in mzML:
-                command += file + " "
-
-            command += "-ids "
-
-            for file in idXML:
-                command += file + " "
-
-            command += "-design " + self.loadedTsv + " "
-            command += "-fasta " + self.loadedFasta + " "
-            command += "-Alignment:max_rt_shift 0 " \
-                       "-targeted_only true " \
-                       "-transfer_ids false " \
-                       "-mass_recalibration false " \
+            command += "-ini tmp.ini " \
                        "-out_cxml BSA.consensusXML.tmp " \
                        "-out_msstats BSA.csv.tmp " \
                        "-out BSA.mzTab.tmp " \

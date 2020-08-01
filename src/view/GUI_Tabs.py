@@ -135,7 +135,7 @@ class MyTableWidget(QWidget):
     def PopupFolder(self):
         msg = QMessageBox()
         msg.setWindowTitle("Attention!")
-        msg.setText("Please choose a Project Folder \n (must be the one containing the mzML and idXML files)")
+        msg.setText("Please choose a Project Folder \n(must be the one containing the mzML and idXML files)")
         msg.setStandardButtons(QMessageBox.Ok)
         msg.buttonClicked.connect(self.loadFolder)
 
@@ -181,7 +181,7 @@ class MyTableWidget(QWidget):
     def PopupIni(self):
         msg = QMessageBox()
         msg.setWindowTitle("Attention!")
-        msg.setText("Do you want to choose a .ini ?")
+        msg.setText("Do you want to choose a .ini ? \nIf you choose cancel a .ini will be automatically generated")
         msg.setStandardButtons(QMessageBox.Yes|QMessageBox.Cancel)
         msg.buttonClicked.connect(self.loadIni)
 

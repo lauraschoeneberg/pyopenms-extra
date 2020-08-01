@@ -61,7 +61,7 @@ class MyTableWidget(QWidget):
         first tab containig the HomeTabWidget
     self.tab2 :
         second tab containing the ConfigView widget
-    elf.tab3 :
+    self.tab3 :
         third tab containing the mzMLTableView widget
     self.tab4 :
         fourth tab containing the FastaViewer widget

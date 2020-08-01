@@ -47,14 +47,18 @@ class MyTableWidget(QWidget):
     ...
     Attributes
     ----------
-    loadedFolder :
+    loadedFolder : String
         path to project folder
-    loadedFasta :
+    loadedFasta : String
         path to loaded .fasta file
-    loadedIni:
+    loadedIni : String
         path to loaded .ini file
-    loadedTsv:
+    loadedTsv : String
         path to loaded .tsv file
+    initButton : QPushButton
+        button to automatically load files        
+    loadButton : QPushButton
+        button to run proteomicsLFQ command
     self.tabs :
         main widget containing all the tabs
     self.tab1 :

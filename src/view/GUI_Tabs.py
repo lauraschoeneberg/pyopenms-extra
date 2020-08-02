@@ -306,7 +306,7 @@ class MyTableWidget(QWidget):
                                                  ".ini files (*.ini)")
             fileName = fileDialog[0]
 
-            self.tab2.generateTreeWidgetItem(fileName)
+            self.tab2.openXML(fileName)
             self.loadedIni = fileName
 
         else:

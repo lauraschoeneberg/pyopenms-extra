@@ -76,7 +76,7 @@ class MyTableWidget(QWidget):
     Methods
     -------
     _init_(self)
-        Sets Window size na exc. initUI()
+        Sets Window size, initializes variables
     show_popup(self)
         asks user to pick a folder from which files should be loaded automatically
     popupbutton_clicked(self, i)

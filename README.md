@@ -1,4 +1,4 @@
-Our package can also be found at:
+Our package can also be found at: <br>https://pypi.org/project/pyopenms-extra-Fabian-Yannik-Laura/1.0/
 https://pypi.org/project/pyopenms-extra-Fabian-Yannik-Laura/1.0/
 
 pyOpenMS Extra

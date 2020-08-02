@@ -345,8 +345,8 @@ class MyTableWidget(QWidget):
             self.loadedIni = self.tab2.path
 
         os.chdir(self.loadedFolder)
-        mzML = glob.glob("*.mzML")
-        idXML = glob.glob("*.idXML")
+        mzML = sorted(glob.glob("*.mzML"))
+        idXML = sorted(glob.glob("*.idXML"))
 
         self.tab2.saveTmpFile()
 

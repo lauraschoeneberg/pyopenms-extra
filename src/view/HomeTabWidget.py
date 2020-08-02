@@ -1,3 +1,4 @@
+  
 import sys
 
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout, QWidget, QSplitter, QMainWindow, QLabel, QLineEdit, QApplication, QAction, QMessageBox
@@ -5,9 +6,37 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
 class HomeTabWidget(QMainWindow):
+    """class to create HomeTabWidget which contains general data about using GUI_Tabs
+        ...
+        Methods
+        -------
+        __init__(self)
+            defines window size and title
 
+        HomeWindow(self)
+            creates window, contains textwidget and textboxes to manually change parameters
+
+        check_parameters(self)
+            checks whether parameters have been changed and clears textboxes
+    """
     
     def __init__(self):
+        """ defines window size and title and sets default parameter values
+        ...
+        Attributes
+        ----------
+        title : string
+            title of widget
+
+        left, top, width, height : int
+            attributes regarding size of widget
+
+        loadedThreads : string
+            'threads' parameter of command, default value is 1
+
+        loadedFDR : string
+            'proteinFDR' parameter of command, default value is 0.3
+        """
         super().__init__()
         self.title = 'Home'
         self.left = 100
@@ -25,7 +54,39 @@ class HomeTabWidget(QMainWindow):
         
         """
         Used to briefly introduce functionality of GUI_Tabs, allows to manually set parameters for cmd command
+        ...
+        Attributes
+        ----------
+        textwidget : QWidget
+            main widget that contains text
 
+        vertical : QVBoxLayout
+            main layout of textwidget
+        
+        HomeTitle : QLabel
+            label that contains headline of text
+
+        Introduction : QLabel
+            label that contains introduction text
+
+        EditParameters : QLabel
+            label that contains information to edit parameters
+
+        Proteomics : QLabel
+            label that contains text about running ProteomicsLFQ command
+
+        ThreadText : QLabel
+            label for 'Threads' textbox
+
+        FDRText : QLabel
+            label for 'FDR' textbox
+
+        horizontal1, horizontal2, horizontal3 : QHBoxLayout
+             horizontal layouts for different levels
+
+        saveButton : QPushButton
+            button to save changed parameters
+        
         """
         self.textwidget = QWidget(self)
         self.vertical = QVBoxLayout(self.textwidget)
@@ -38,7 +99,6 @@ class HomeTabWidget(QMainWindow):
         self.EditParameters = QLabel()
         self.Proteomics = QLabel()
 
-        
         self.HomeTitle.setText("<font color = 'darkblue'>Welcome!</font>")
         self.HomeTitle.setFont(QFont("Arial",16))
         self.HomeTitle.move(100,50)
@@ -49,7 +109,7 @@ class HomeTabWidget(QMainWindow):
             
             For the latter method, simply click 'Load Data'-Button above.
             """
-        #TODO: add load data - Button here
+        
         self.Introduction.setText(IntroductionText)
         self.Introduction.setFont(QFont("Arial",12))
 
@@ -116,6 +176,7 @@ class HomeTabWidget(QMainWindow):
         self.show()
         
     def check_parameters(self):
+        """ checks whether parameters have been changed and clears textboxes"""
         if self.ThreadTextBox.text() == "":
             self.loadedThreads = "1"
         else: self.loadedThreads = self.ThreadTextBox.text()
@@ -132,9 +193,7 @@ def main():
         app = QApplication(sys.argv)
         ex = HomeTabWidget()
         sys.exit(app.exec_())
-
 if __name__ == '__main__':
         main()
         
- """       
-        
+ """    
